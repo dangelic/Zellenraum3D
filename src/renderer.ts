@@ -5,7 +5,10 @@ const scene = new THREE.Scene();
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 10;
+
+// Adjust camera position and target
+camera.position.set(10, 5, 10);  // Position the camera
+camera.lookAt(0, 0, 0); // Point the camera at the center of the scene
 
 // Renderer
 const renderer = new THREE.WebGLRenderer();
@@ -13,7 +16,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Create a 3D grid and array
-const gridSize = 5; 
+const gridSize = 10;
 const cubeSize = 1;
 const grid = new Array(gridSize);
 
@@ -44,8 +47,8 @@ for (let x = 0; x < gridSize; x++) {
 const animate = () => {
   requestAnimationFrame(animate);
 
-  // Rotate the grid around the Y-axis
-  scene.rotation.y += 0.005;
+  // Rotate the entire grid around the Y-axis
+  scene.rotation.y += 0.01;
 
   renderer.render(scene, camera);
 };
