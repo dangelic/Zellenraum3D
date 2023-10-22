@@ -9,7 +9,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Load 3D Grid-World instance as singleton
+// Load 3D Grid-World instance as a singleton
 const world3D = World3D.getInstance();
 
 // Setup the Camera
@@ -23,6 +23,11 @@ const cameraDistance = world3D.getWorldSize();
 camera.position.set(cameraDistance, cameraDistance, cameraDistance); // Position the camera relative to World-Size
 camera.lookAt(0, 0, 0); // Point the camera at the center of the scene
 
+world3D.setCellMaterial(0, 0, 0, true);
+world3D.setCellMaterial(2, 2, 2, false);
+world3D.setCellMaterial(3, 3, 3, true);
+
+// Start the demo to create the cells
 world3D.startDemo(1);
 
 // Animation loop
@@ -34,9 +39,9 @@ const animate = () => {
 
 animate();
 
-// Schedule clearing the scene after 10 seconds
+// Apply materials to cells after the cells are created
 setTimeout(() => {
-  world3D.clearWorld();
-}, 5000); // 10000 milliseconds = 10 seconds
+  world3D.applyMaterialsToCells();
+}, 1000);
 
-export { scene };
+export { scene }
