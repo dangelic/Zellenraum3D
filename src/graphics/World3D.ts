@@ -29,7 +29,7 @@ export class World3D {
     this.scene = scene; // from renderer.ts
 
     this.cellSize = 1;
-    this.worldSize = 50;
+    this.worldSize = 100;
 
     this.hiddenMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
     this.visibleMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
@@ -63,7 +63,7 @@ export class World3D {
         this.cellArray[x][y] = new Array(this.worldSize);
       }
     }
-    this.cellArray = Seeds.getRandomSeed(this.cellArray, 0.0005);
+    this.cellArray = Seeds.getRandomSeed(this.cellArray, 0.005);
   }
 
   public static getInstance(): World3D {
@@ -151,8 +151,25 @@ export class World3D {
       for (let y = 0; y < this.worldSize; y++) {
         for (let z = 0; z < this.worldSize; z++) {
           const isCellVisible = this.cellArray[x][y][z];
+
           if (isCellVisible) {
-            const cell = new THREE.Mesh(this.cellGeometry, this.visibleMaterial);
+            // Calculate the distance from the center of the grid
+            const distance = Math.sqrt(
+              (x - this.worldSize / 2) ** 2 +
+              (y - this.worldSize / 2) ** 2 +
+              (z - this.worldSize / 2) ** 2
+            );
+
+            // Calculate a color based on the distance (shades of red)
+            const hue = 0; // Red hue
+            const saturation = 1; // Full saturation
+            const lightness = 1 - (distance / (this.worldSize * 1.5)); // Adjust the lightness based on distance
+
+            // Create the cell with the calculated color and add it to the scene
+            const color = new THREE.Color();
+            color.setHSL(hue, saturation, lightness);
+            const cellMaterial = new THREE.MeshBasicMaterial({ color });
+            const cell = new THREE.Mesh(this.cellGeometry, cellMaterial);
             cell.position.set(
               x * this.cellSize - this.worldSize / 2,
               y * this.cellSize - this.worldSize / 2,
@@ -165,7 +182,9 @@ export class World3D {
     }
 
     this.isCreatingCells = false; // Cube creation is complete
-  }
+}
+
+
 
   private addCubesIncrementally(msDelay, x, y, z) {
     if (!this.isCreatingCells) {
