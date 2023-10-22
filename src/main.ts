@@ -10,7 +10,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true, // Allow Node.js integration in the renderer process
       contextIsolation: false, // Disable context isolation for simpler integration
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
 
