@@ -63,7 +63,7 @@ export class World3D {
         this.cellArray[x][y] = new Array(this.worldSize);
       }
     }
-    this.cellArray = Seeds.getRandomSeed(this.cellArray, 0.3);
+    this.cellArray = Seeds.getRandomSeed(this.cellArray, 0.0005);
   }
 
   public static getInstance(): World3D {
@@ -92,7 +92,7 @@ export class World3D {
 
     this.isCreatingCells = true; // Set the flag to indicate cube creation is in progress
     this.applyMaterialsToCells();
-    this.addCubesIncrementally(msDelay, 0, 0, 0);
+    this.addCubesInstantly();
   }
 
   // Getter to retrieve cell material
@@ -144,6 +144,27 @@ export class World3D {
         }
       }
     }
+  }
+
+  private addCubesInstantly() {
+    for (let x = 0; x < this.worldSize; x++) {
+      for (let y = 0; y < this.worldSize; y++) {
+        for (let z = 0; z < this.worldSize; z++) {
+          const isCellVisible = this.cellArray[x][y][z];
+          if (isCellVisible) {
+            const cell = new THREE.Mesh(this.cellGeometry, this.visibleMaterial);
+            cell.position.set(
+              x * this.cellSize - this.worldSize / 2,
+              y * this.cellSize - this.worldSize / 2,
+              z * this.cellSize - this.worldSize / 2
+            );
+            this.scene.add(cell);
+          }
+        }
+      }
+    }
+
+    this.isCreatingCells = false; // Cube creation is complete
   }
 
   private addCubesIncrementally(msDelay, x, y, z) {
