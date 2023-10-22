@@ -23,10 +23,6 @@ const cameraDistance = world3D.getWorldSize();
 camera.position.set(cameraDistance, cameraDistance, cameraDistance); // Position the camera relative to World-Size
 camera.lookAt(0, 0, 0); // Point the camera at the center of the scene
 
-world3D.setCellMaterial(0, 0, 0, true);
-world3D.setCellMaterial(2, 2, 2, false);
-world3D.setCellMaterial(3, 3, 3, true);
-
 // Start the demo to create the cells
 world3D.startDemo(1);
 
@@ -41,7 +37,7 @@ animate();
 
 // Apply materials to cells after the cells are created
 setTimeout(() => {
-  world3D.applyMaterialsToCells();
+  //world3D.applyMaterialsToCells();
 }, 1000);
 
 export { scene };

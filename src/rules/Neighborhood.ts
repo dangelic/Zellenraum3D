@@ -38,35 +38,34 @@ export class Neighborhood {
     // Define relative positions for Moore neighbors
     const relativePositions = [
       [-1, -1, -1], // Southwest Down
-      [-1, -1, 0],  // West Down
-      [-1, -1, 1],  // Northwest Down
-      [-1, 0, -1],  // South Down
-      [-1, 0, 0],   // Down
-      [-1, 0, 1],   // North Down
-      [-1, 1, -1],  // Southeast Down
-      [-1, 1, 0],   // East Down
-      [-1, 1, 1],   // Northeast Down
-    
-      [0, -1, -1],  // South
-      [0, -1, 0],   // Down
-      [0, -1, 1],   // North
-      [0, 0, -1],   // South Down
-      [0, 0, 1],    // North Down
-      [0, 1, -1],   // Southeast
-      [0, 1, 0],    // East
-      [0, 1, 1],    // Northeast
-    
-      [1, -1, -1],  // Southwest Up
-      [1, -1, 0],   // West Up
-      [1, -1, 1],   // Northwest Up
-      [1, 0, -1],   // South Up
-      [1, 0, 0],    // Up
-      [1, 0, 1],    // North Up
-      [1, 1, -1],   // Southeast Up
-      [1, 1, 0],    // East Up
-      [1, 1, 1],    // Northeast Up
+      [-1, -1, 0], // West Down
+      [-1, -1, 1], // Northwest Down
+      [-1, 0, -1], // South Down
+      [-1, 0, 0], // Down
+      [-1, 0, 1], // North Down
+      [-1, 1, -1], // Southeast Down
+      [-1, 1, 0], // East Down
+      [-1, 1, 1], // Northeast Down
+
+      [0, -1, -1], // South
+      [0, -1, 0], // Down
+      [0, -1, 1], // North
+      [0, 0, -1], // South Down
+      [0, 0, 1], // North Down
+      [0, 1, -1], // Southeast
+      [0, 1, 0], // East
+      [0, 1, 1], // Northeast
+
+      [1, -1, -1], // Southwest Up
+      [1, -1, 0], // West Up
+      [1, -1, 1], // Northwest Up
+      [1, 0, -1], // South Up
+      [1, 0, 0], // Up
+      [1, 0, 1], // North Up
+      [1, 1, -1], // Southeast Up
+      [1, 1, 0], // East Up
+      [1, 1, 1], // Northeast Up
     ];
-    
 
     // Calculate Moore neighbors' coordinates
     for (const [dx, dy, dz] of relativePositions) {

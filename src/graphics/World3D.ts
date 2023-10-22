@@ -1,6 +1,8 @@
 import { scene } from '../renderer';
 import * as THREE from 'three';
 
+import { Seeds } from './Seeds';
+
 export class World3D {
   // Singleton
   private static instance: World3D | null = null;
@@ -61,6 +63,7 @@ export class World3D {
         this.cellArray[x][y] = new Array(this.worldSize);
       }
     }
+    this.cellArray = Seeds.getRandomSeed(this.cellArray, 0.3);
   }
 
   public static getInstance(): World3D {
@@ -88,6 +91,7 @@ export class World3D {
     }
 
     this.isCreatingCells = true; // Set the flag to indicate cube creation is in progress
+    this.applyMaterialsToCells();
     this.addCubesIncrementally(msDelay, 0, 0, 0);
   }
 
@@ -121,7 +125,7 @@ export class World3D {
     }
   }
 
-  public applyMaterialsToCells(): void {
+  private applyMaterialsToCells(): void {
     for (let x = 0; x < this.worldSize; x++) {
       for (let y = 0; y < this.worldSize; y++) {
         for (let z = 0; z < this.worldSize; z++) {
@@ -157,38 +161,27 @@ export class World3D {
       cell.position.set(
         x * this.cellSize - this.worldSize / 2,
         y * this.cellSize - this.worldSize / 2,
-        z * this.cellSize - this.worldSize / 2,
+        z * this.cellSize - this.worldSize / 2
       );
       this.scene.add(cell);
-    } else {
-      // Check if the cell exists in the scene and remove it if it does
-      if (
-        this.scene.children.length >
-        x * this.worldSize * this.worldSize + y * this.worldSize + z + 1
-      ) {
-        const cell = this.scene.children[
-          x * this.worldSize * this.worldSize + y * this.worldSize + z + 1
-        ] as THREE.Mesh;
-        this.scene.remove(cell);
-      }
     }
 
-    // Update the material of the cell in the cellArray
-    this.cellArray[x][y][z] = isCellVisible;
-
     // Continue with the next cell
-    if (x < this.worldSize) {
+    if (x < this.worldSize - 1) {
       setTimeout(() => {
         this.addCubesIncrementally(msDelay, x + 1, y, z);
       }, msDelay);
-    } else if (y < this.worldSize) {
+    } else if (y < this.worldSize - 1) {
       setTimeout(() => {
         this.addCubesIncrementally(msDelay, 0, y + 1, z);
       }, msDelay);
-    } else if (z < this.worldSize) {
+    } else if (z < this.worldSize - 1) {
       setTimeout(() => {
         this.addCubesIncrementally(msDelay, 0, 0, z + 1);
       }, msDelay);
+    } else {
+      // Cube creation is complete
+      this.isCreatingCells = false;
     }
   }
 }
