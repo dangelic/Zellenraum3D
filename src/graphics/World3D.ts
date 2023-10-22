@@ -92,12 +92,21 @@ export class World3D {
   }
 
   // Getter to retrieve cell material
-  public getCellMaterial(x: number, y: number, z: number): THREE.MeshBasicMaterial {
+  public getCellMaterial(
+    x: number,
+    y: number,
+    z: number,
+  ): THREE.MeshBasicMaterial {
     return this.cellArray[x][y][z] ? this.visibleMaterial : this.hiddenMaterial;
   }
 
   // Setter to set cell material as visible or hidden
-  public setCellMaterial(x: number, y: number, z: number, visible: boolean): void {
+  public setCellMaterial(
+    x: number,
+    y: number,
+    z: number,
+    visible: boolean,
+  ): void {
     this.cellArray[x][y][z] = visible;
   }
 
@@ -117,27 +126,31 @@ export class World3D {
       for (let y = 0; y < this.worldSize; y++) {
         for (let z = 0; z < this.worldSize; z++) {
           const cellMaterial = this.getCellMaterial(x, y, z);
-  
+
           // Check if the cell exists in the scene
-          if (this.scene.children.length > (x * this.worldSize * this.worldSize + y * this.worldSize + z + 1)) {
-            const cell = this.scene.children[x * this.worldSize * this.worldSize + y * this.worldSize + z + 1] as THREE.Mesh;
+          if (
+            this.scene.children.length >
+            x * this.worldSize * this.worldSize + y * this.worldSize + z + 1
+          ) {
+            const cell = this.scene.children[
+              x * this.worldSize * this.worldSize + y * this.worldSize + z + 1
+            ] as THREE.Mesh;
             cell.material = cellMaterial;
           }
         }
       }
     }
-}
+  }
 
-
-private addCubesIncrementally(msDelay, x, y, z) {
+  private addCubesIncrementally(msDelay, x, y, z) {
     if (!this.isCreatingCells) {
       // If cube creation should be stopped, exit the function
       return;
     }
-  
+
     // Determine if the cell should be visible or hidden
     const isCellVisible = this.cellArray[x][y][z];
-  
+
     if (isCellVisible) {
       // Create the cell with the visible material and add it to the scene
       const cell = new THREE.Mesh(this.cellGeometry, this.visibleMaterial);
@@ -149,15 +162,20 @@ private addCubesIncrementally(msDelay, x, y, z) {
       this.scene.add(cell);
     } else {
       // Check if the cell exists in the scene and remove it if it does
-      if (this.scene.children.length > (x * this.worldSize * this.worldSize + y * this.worldSize + z + 1)) {
-        const cell = this.scene.children[x * this.worldSize * this.worldSize + y * this.worldSize + z + 1] as THREE.Mesh;
+      if (
+        this.scene.children.length >
+        x * this.worldSize * this.worldSize + y * this.worldSize + z + 1
+      ) {
+        const cell = this.scene.children[
+          x * this.worldSize * this.worldSize + y * this.worldSize + z + 1
+        ] as THREE.Mesh;
         this.scene.remove(cell);
       }
     }
-  
+
     // Update the material of the cell in the cellArray
     this.cellArray[x][y][z] = isCellVisible;
-  
+
     // Continue with the next cell
     if (x < this.worldSize) {
       setTimeout(() => {
@@ -172,5 +190,5 @@ private addCubesIncrementally(msDelay, x, y, z) {
         this.addCubesIncrementally(msDelay, 0, 0, z + 1);
       }, msDelay);
     }
-  }  
+  }
 }

@@ -44,4 +44,4 @@ setTimeout(() => {
   world3D.applyMaterialsToCells();
 }, 1000);
 
-export { scene }
+export { scene };
