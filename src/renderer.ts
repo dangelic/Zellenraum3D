@@ -34,4 +34,9 @@ const animate = () => {
 
 animate();
 
+// Schedule clearing the scene after 10 seconds
+setTimeout(() => {
+  world3D.clearWorld();
+}, 5000); // 10000 milliseconds = 10 seconds
+
 export { scene };
