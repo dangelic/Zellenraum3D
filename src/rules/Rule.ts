@@ -1,8 +1,8 @@
 import { Neighborhood } from './Neighborhood';
 
-export class Rules {
+export class Rule {
   static apply445M(
-    world: number[][][],
+    world: boolean[][][],
     x: number,
     y: number,
     z: number,
@@ -21,14 +21,14 @@ export class Rules {
         nz >= 0 &&
         nz < world[0][0].length
       ) {
-        if (world[nx][ny][nz] === 1) {
+        if (world[nx][ny][nz]) {
           aliveNeighbors++;
         }
       }
     }
 
     // Apply rules based on the count of alive neighbors
-    if (currentState === 1) {
+    if (currentState) {
       if (aliveNeighbors === 4) {
         return 'survives'; // Cell survives
       } else {

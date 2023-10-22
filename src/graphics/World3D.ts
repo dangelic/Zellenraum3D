@@ -1,14 +1,14 @@
 import { scene } from '../renderer';
 import * as THREE from 'three';
 
-import { Seeds } from './Seeds';
+import { Seed } from './Seed';
 
 export class World3D {
   // Singleton
   private static instance: World3D | null = null;
 
   private scene: THREE.Scene;
-  private isCreatingCells: boolean = false; // Flag to track cube creation
+  private isCreatingCells: boolean = true; // Flag to track cube creation
 
   private cellSize: number;
   private worldSize: number;
@@ -63,7 +63,7 @@ export class World3D {
         this.cellArray[x][y] = new Array(this.worldSize);
       }
     }
-    this.cellArray = Seeds.getRandomSeed(this.cellArray, 0.005);
+    this.cellArray = Seed.getRandomSeed(this.cellArray, 0.005);
   }
 
   public static getInstance(): World3D {
@@ -84,6 +84,10 @@ export class World3D {
     return this.worldSize;
   }
 
+  public getCellArray(): boolean[][][] {
+    return this.cellArray
+  }
+
   public startDemo(msDelay: number): void {
     if (this.isCreatingCells) {
       // If cube creation is in progress, don't start a new one
@@ -92,7 +96,7 @@ export class World3D {
 
     this.isCreatingCells = true; // Set the flag to indicate cube creation is in progress
     this.applyMaterialsToCells();
-    this.addCubesInstantly();
+    this.addCubesInstantly(this.cellArray);
   }
 
   // Getter to retrieve cell material
@@ -146,11 +150,12 @@ export class World3D {
     }
   }
 
-  private addCubesInstantly() {
+  public addCubesInstantly(cellArray: boolean[][][]) {
     for (let x = 0; x < this.worldSize; x++) {
       for (let y = 0; y < this.worldSize; y++) {
         for (let z = 0; z < this.worldSize; z++) {
-          const isCellVisible = this.cellArray[x][y][z];
+          // const isCellVisible = this.cellArray[x][y][z];
+          const isCellVisible = cellArray[x][y][z];
 
           if (isCellVisible) {
             // Calculate the distance from the center of the grid

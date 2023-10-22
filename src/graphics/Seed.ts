@@ -1,4 +1,4 @@
-export class Seeds {
+export class Seed {
   static getRandomSeed(
     world: boolean[][][],
     probability: number,

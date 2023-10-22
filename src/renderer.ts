@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { World3D } from './graphics/World3D';
+import { GenerationLoop } from './graphics/GenerationLoop'; // Import the GenerationLoop class
 
 // -- ThreeJS
 // Scene
@@ -24,7 +25,11 @@ camera.position.set(cameraDistance, cameraDistance, cameraDistance); // Position
 camera.lookAt(0, 0, 0); // Point the camera at the center of the scene
 
 // Start the demo to create the cells
-world3D.startDemo(1);
+// world3D.startDemo(1);
+
+// Create an instance of GenerationLoop and start the loop
+const generationLoop = new GenerationLoop(world3D.getCellArray(), 0.03, 1000); // Adjust parameters as needed
+generationLoop.startLoop();
 
 // Animation loop
 const animate = () => {
