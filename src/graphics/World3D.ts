@@ -25,7 +25,7 @@ export class World3D {
     this.scene = scene; // from renderer.ts
 
     this.cellSize = 1;
-    this.worldSize = 100;
+    this.worldSize = 5;
 
     this.cellGeometry = new THREE.BoxGeometry(
       this.cellSize,
@@ -67,14 +67,24 @@ export class World3D {
   }
 
   public clearWorld(): void {
-    this.scene.remove.apply(scene, scene.children);
-    this.scene.add(this.frameBoxEdgeLines);
+    const children = this.scene.children;
+    for (let i = children.length - 1; i >= 0; i--) {
+      const child = children[i];
+      if (child !== this.frameBoxEdgeLines) {
+        // Don't remove the frame box lines
+        this.scene.remove(child);
+      }
+    }
     this.isCreatingCells = false; // Set the flag to stop cube creation
     this.clearCellArray();
   }
 
   public getWorldSize(): number {
     return this.worldSize;
+  }
+
+  public getCellArray(): boolean[][][] {
+    return this.cellArray;
   }
 
   public startDemo(msDelay: number, addInstantly: boolean = true): void {
@@ -107,11 +117,13 @@ export class World3D {
     }
   }
 
-  private addCubesInstantly() {
+  public addCubesInstantly(cellArray?) {
     for (let x = 0; x < this.worldSize; x++) {
       for (let y = 0; y < this.worldSize; y++) {
         for (let z = 0; z < this.worldSize; z++) {
-          const isCellVisible = this.cellArray[x][y][z];
+          let isCellVisible: boolean;
+          if (arguments.length === 1) isCellVisible = cellArray[x][y][z];
+          else isCellVisible = this.cellArray[x][y][z];
 
           if (isCellVisible) {
             // Calculate the distance from the center of the grid
@@ -121,15 +133,15 @@ export class World3D {
               (z - this.worldSize / 2) ** 2
             );
 
-            // Calculate a color based on the distance (shades of red)
-            const hue = 0; // Red hue
+            // Calculate a color based on the distance (yellow to red gradient)
+            const hue = 0.1667 + (distance / (this.worldSize * 1.5)) * 0.8333; // From yellow (0.1667) to red (1.0)
             const saturation = 1; // Full saturation
-            const lightness = 1 - (distance / (this.worldSize * 1.5)); // Adjust the lightness based on distance
+            const lightness = 1 - (distance / (this.worldSize * 1.5)); // Adjust the lightness based on distance (from yellow to red)
 
             // Create the cell with the calculated color and add it to the scene
             const color = new THREE.Color();
             color.setHSL(hue, saturation, lightness);
-            const cellMaterial = new THREE.MeshBasicMaterial({ color });
+            const cellMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
             const cell = new THREE.Mesh(this.cellGeometry, cellMaterial);
             cell.position.set(
               x * this.cellSize - this.worldSize / 2,
@@ -143,7 +155,9 @@ export class World3D {
     }
 
     this.isCreatingCells = false; // Cube creation is complete
-  }
+}
+
+
 
   private addCubesIncrementally(msDelay, x, y, z) {
     if (!this.isCreatingCells) {

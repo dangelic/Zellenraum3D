@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { World3D } from './graphics/World3D';
+import { Seeds } from './graphics/Seeds';
+import { GenerationLoop } from './graphics/GenerationLoop';
 
 // -- ThreeJS
 // Scene
@@ -24,7 +26,7 @@ camera.position.set(cameraDistance, cameraDistance, cameraDistance); // Position
 camera.lookAt(0, 0, 0); // Point the camera at the center of the scene
 
 // Start the demo to create the cells
-world3D.startDemo(1);
+// world3D.startDemo(1);
 
 // Animation loop
 const animate = () => {
@@ -32,12 +34,15 @@ const animate = () => {
   scene.rotation.y += 0.005; // Rotate 3D world around the Y-axis
   renderer.render(scene, camera);
 };
+let cellArray = world3D.getCellArray()
+cellArray = Seeds.getClusteredSeed(cellArray, 3)
+GenerationLoop.startGenerationLoop(cellArray)
 
 animate();
 
-// Apply materials to cells after the cells are created
-setTimeout(() => {
-  //world3D.applyMaterialsToCells();
-}, 1000);
+// // Apply materials to cells after the cells are created
+// setTimeout(() => {
+//   //world3D.applyMaterialsToCells();
+// }, 1000);
 
 export { scene };
