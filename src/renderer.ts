@@ -35,7 +35,7 @@ const animate = () => {
   renderer.render(scene, camera);
 };
 let cellArray = world3D.getCellArray()
-cellArray = Seeds.getClusteredSeed(cellArray, 3)
+cellArray = Seeds.getClusteredSeed(cellArray, 10)
 GenerationLoop.startGenerationLoop(cellArray)
 
 animate();

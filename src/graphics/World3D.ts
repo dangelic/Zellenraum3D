@@ -25,7 +25,7 @@ export class World3D {
     this.scene = scene; // from renderer.ts
 
     this.cellSize = 1;
-    this.worldSize = 5;
+    this.worldSize = 40;
 
     this.cellGeometry = new THREE.BoxGeometry(
       this.cellSize,
@@ -56,7 +56,7 @@ export class World3D {
       }
     }
     //this.cellArray = Seeds.getRandomSeed(this.cellArray, 0.05);
-    this.cellArray = Seeds.getClusteredSeed(this.cellArray, 10)
+    this.cellArray = Seeds.getClusteredSeed(this.cellArray, 50)
   }
 
   public static getInstance(): World3D {
@@ -141,7 +141,7 @@ export class World3D {
             // Create the cell with the calculated color and add it to the scene
             const color = new THREE.Color();
             color.setHSL(hue, saturation, lightness);
-            const cellMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+            const cellMaterial = new THREE.MeshBasicMaterial({ color });
             const cell = new THREE.Mesh(this.cellGeometry, cellMaterial);
             cell.position.set(
               x * this.cellSize - this.worldSize / 2,

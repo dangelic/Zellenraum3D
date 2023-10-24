@@ -75,7 +75,6 @@ export class Neighborhood {
 
       neighbors.push([neighborX, neighborY, neighborZ]);
     }
-
     return neighbors;
   }
 }
