@@ -55,7 +55,8 @@ export class World3D {
         this.cellArray[x][y] = new Array(this.worldSize).fill(false);
       }
     }
-    this.cellArray = Seeds.getRandomSeed(this.cellArray, 0.05);
+    //this.cellArray = Seeds.getRandomSeed(this.cellArray, 0.05);
+    this.cellArray = Seeds.getClusteredSeed(this.cellArray, 10)
   }
 
   public static getInstance(): World3D {
