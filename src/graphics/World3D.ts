@@ -25,7 +25,7 @@ export class World3D {
     this.scene = scene; // from renderer.ts
 
     this.cellSize = 1;
-    this.worldSize = 40;
+    this.worldSize = 30;
 
     this.cellGeometry = new THREE.BoxGeometry(
       this.cellSize,

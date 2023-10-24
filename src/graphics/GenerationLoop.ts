@@ -8,7 +8,7 @@ export class GenerationLoop {
         let generations = 0; // Track the number of generations
 
         const updateCellVisibility = () => {
-            if (generations >= 100) {
+            if (generations >= 1000) {
                 // Stop after 5 generations
                 World3D.getInstance().clearWorld();
                 return;
@@ -17,8 +17,8 @@ export class GenerationLoop {
             for (let x = 0; x < cellArray.length; x++) {
                 for (let y = 0; y < cellArray[0].length; y++) {
                     for (let z = 0; z < cellArray[0][0].length; z++) {
-                        const result = Rules.customRule(cellArray, x, y, z);
-                        if (result) {
+                        const result = Rules.apply445M(cellArray, x, y, z);
+                        if (result === "survives" || result === "born") {
                             cellArray[x][y][z] = true;
                         } else {
                             cellArray[x][y][z] = false;
@@ -32,7 +32,7 @@ export class GenerationLoop {
             World3D.getInstance().clearWorld()
 
             
-            World3D.getInstance().addCubesPreload(100, cellArray);
+            World3D.getInstance().addCubesInstantly(cellArray);
 
             generations++; // Increment the generation count
 
