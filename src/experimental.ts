@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-
+import { Seeds } from './graphics/Seeds';
 
 // Create a scene
 const scene = new THREE.Scene();
@@ -13,52 +13,71 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Cube geometry
-const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-
-// Material
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-
-// Create an InstancedMesh
-const instanceCount = 64000; // Number of instances
-const mesh = new THREE.InstancedMesh(geometry, material, instanceCount);
-
-// Define the dimensions of the grid (a, b, c)
-const a = 40;
-const b = 40;
-const c = 40;
-
-// Populate instance matrix
-const matrix = new THREE.Matrix4();
-for (let i = 0; i < a; i++) {
-    for (let j = 0; j < b; j++) {
-        for (let k = 0; k < c; k++) {
-            matrix.setPosition(i - a / 2, j - b / 2, k - c / 2);
-            mesh.setMatrixAt(i * b * c + j * c + k, matrix);
-        }
-    }
-}
-
-// Add the mesh to the scene
-scene.add(mesh);
-
 // Create a light source
 const light = new THREE.PointLight(0xffffff, 1);
 light.position.set(5, 5, 5);
 scene.add(light);
 
-// Add event listeners to control the camera if needed
-
 // Render the scene
 const animate = () => {
     requestAnimationFrame(animate);
-    scene.rotation.x += 0.01;
-    // You can add animations or interactions here if needed
-
+    scene.rotation.y += 0.01;
     renderer.render(scene, camera);
 };
 
+let worldSize = 40;
+
+const setArray = () => {
+    let cellArray = new Array(worldSize);
+    for (let x = 0; x < worldSize; x++) {
+        cellArray[x] = new Array(worldSize);
+        for (let y = 0; y < worldSize; y++) {
+            cellArray[x][y] = new Array(worldSize).fill(false);
+        }
+    }
+    return cellArray;
+}
+
+const addCubesInstantly = (numSeed) => {
+    // Clear the scene
+    scene.clear();
+
+    // Create a new InstancedMesh
+    const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const instanceCount = 64000;
+    const mesh = new THREE.InstancedMesh(geometry, material, instanceCount);
+    scene.add(mesh);
+
+    // Create a new cell array and populate it with the seed
+    let cellArray = setArray();
+    cellArray = Seeds.getClusteredSeed(cellArray, numSeed);
+
+    for (let x = 0; x < worldSize; x++) {
+        for (let y = 0; y < worldSize; y++) {
+            for (let z = 0; z < worldSize; z++) {
+                let isCellVisible = cellArray[x][y][z];
+
+                const matrix = new THREE.Matrix4();
+                if (isCellVisible) {
+                    matrix.setPosition(x - worldSize / 2, y - worldSize / 2, z - worldSize / 2);
+                    mesh.setMatrixAt(x * worldSize * worldSize + y * worldSize + z, matrix);
+                }
+            }
+        }
+    }
+}
+
+// Initial call to addCubesInstantly
+addCubesInstantly(10);
+
+// Use a callback to ensure the changes are applied before rendering
+setInterval(() => {
+    addCubesInstantly(Math.floor(Math.random() * 11) + 20);
+    console.log("x")
+}, 100);
+
+// Start the animation loop
 animate();
 
-
-export {scene}
+export { scene };
