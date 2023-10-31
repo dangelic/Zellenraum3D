@@ -1,0 +1,16 @@
+{   
+    "sceneSettings": {
+        "rotation": 0.2
+    },
+    "baseColors": {
+        "frameBoxColor": "0x00ff00",
+        "baseCellColor": "0x00ffff"
+    },
+    "worldSettings": {
+        "worldDize": 50,
+        "cellSize": 0.2,
+        "cellOffset": 0.3
+    }
+
+
+}
