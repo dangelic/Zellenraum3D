@@ -20,36 +20,40 @@ let worldSize = 50;
 let cellOffset = 0;
 const cellSize = 0.2;
 
-
-const cameraDistance = worldSize * (cellSize ) *1.33; // 0.5 ---- offset replace me
+const cameraDistance = worldSize * (cellSize) * 1.33;
 camera.position.set(0, worldSize / 9, cameraDistance);
 camera.lookAt(0, 0, 0);
 
-
-
 const world3D = new World3D(worldSize, cellSize, cellOffset);
-const emptyGeneration = world3D.getCurrentGeneration();
-let currentGeneration = Seeds.getRandomSeed(emptyGeneration, 0.5);
+let currentGeneration = Seeds.getRandomSeed(world3D.getCurrentGeneration(), 0.5);
 world3D.setCurrentGeneration(currentGeneration);
 
 let condition = true;
 
-const intervalId = setInterval(() => {
+// Define a tick function for animation and updates
+const tick = () => {
   if (condition) {
     currentGeneration = Rules.applyClouds(currentGeneration);
     world3D.setCurrentGeneration(currentGeneration);
-  } else {
-    clearInterval(intervalId);
   }
-}, 250); //
-
-// Render the scene
-const animate = () => {
-  requestAnimationFrame(animate);
-  scene.rotation.y += 0.005; // Rotate counter-clockwise
+  requestAnimationFrame(tick);
+  world3D.cellContainer.rotation.y += 0.05 ; // Rotate counter-clockwise
   renderer.render(scene, camera);
 };
 
-animate(); // Start...
+const tickFrameBox = () => {
+  frameBox.rotation.y += 0.0000; // Rotate the frameBox faster
+  requestAnimationFrame(tickFrameBox);
+};
+
+const frameBox = world3D.frameBoxContainer
+scene.add(frameBox);
+
+// Start the animation loop for the frameBox rotation
+tickFrameBox();
+
+
+// Start the animation loop using tick
+tick();
 
 export { scene };

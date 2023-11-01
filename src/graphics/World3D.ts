@@ -10,6 +10,10 @@ export class World3D {
   private currentGeneration: boolean[][][];
   private generationCount: number;
 
+  private frameBox: THREE.LineSegments;
+  public cellContainer: THREE.Object3D;
+  public frameBoxContainer: THREE.Object3D;
+
   public constructor(worldSize: number, cellSize: number, cellOffset: number) {
     this.worldSize = worldSize;
     this.cellSize = cellSize;
@@ -18,8 +22,16 @@ export class World3D {
     this.currentGeneration = this.createEmptyGeneration();
     this.generationCount = 0;
 
-    this.createFramebox();
+    this.cellContainer = new THREE.Object3D();
+    this.frameBoxContainer = new THREE.Object3D();
+
+    this.frameBox = this.createFramebox();
+    this.frameBoxContainer.add(this.frameBox);
+
+    scene.add(this.cellContainer);
+    // scene.add(this.frameBoxContainer);
   }
+  
 
   // Getter & Setter
   //
@@ -38,48 +50,43 @@ export class World3D {
   }
 
   private addCellsToScene = (): void => {
-    // Clear scene and Re-add frameBox
-    scene.clear();
-    this.createFramebox();
+    // Create new InstancedMesh and add it to the container
+    this.cellContainer.clear();
 
-    // Create new InstancedMesh and add it to the scene
     const geometry = new THREE.BoxGeometry(
       this.cellSize,
       this.cellSize,
-      this.cellSize,
+      this.cellSize
     );
-    const material = new THREE.MeshBasicMaterial({wireframe: false});
-    const numInstances = Math.pow(this.worldSize, 3); // cubic relation to worldSize (x*y*z cells)
+    const material = new THREE.MeshBasicMaterial({ wireframe: true });
+    const numInstances = Math.pow(this.worldSize, 3);
     const cellMesh = new THREE.InstancedMesh(geometry, material, numInstances);
-    scene.add(cellMesh);
-
+    this.cellContainer.add(cellMesh);
+  
     for (let x = 0; x < this.worldSize; x++) {
       for (let y = 0; y < this.worldSize; y++) {
         for (let z = 0; z < this.worldSize; z++) {
           let isCellVisible = this.currentGeneration[x][y][z];
-
+  
           const matrix = new THREE.Matrix4();
           if (isCellVisible) {
-            // Adjust cell positions based on worldSize
             matrix.setPosition(
               (x - this.worldSize / 2) * (this.cellSize + this.cellOffset),
               (y - this.worldSize / 2) * (this.cellSize + this.cellOffset),
-              (z - this.worldSize / 2) * (this.cellSize + this.cellOffset),
+              (z - this.worldSize / 2) * (this.cellSize + this.cellOffset)
             );
-            let meshI = x * this.worldSize * this.worldSize + y * this.worldSize + z
-            cellMesh.setMatrixAt(
-              meshI,
-              matrix,
-            );
+            let meshI = x * this.worldSize * this.worldSize + y * this.worldSize + z;
+            cellMesh.setMatrixAt(meshI, matrix);
             let rgb;
-            rgb = ColorMapper.mapPositionToColor(this.currentGeneration, x,y,z)
-            cellMesh.setColorAt(meshI, new THREE.Color(rgb))
+            rgb = ColorMapper.mapPositionToColor(this.currentGeneration, x, y, z);
+            cellMesh.setColorAt(meshI, new THREE.Color(rgb));
             cellMesh.instanceColor.needsUpdate = true;
           }
         }
       }
     }
   };
+  
 
   private createEmptyGeneration(): boolean[][][] {
     const currentGeneration = new Array(this.worldSize);
@@ -92,21 +99,23 @@ export class World3D {
     return currentGeneration;
   }
 
-  private createFramebox(): void {
+  public createFramebox(): THREE.LineSegments {
     const frameBoxSize =
       this.worldSize * (this.cellSize + this.cellOffset) - this.cellSize;
     const frameBoxGeometry = new THREE.BoxGeometry(
       frameBoxSize,
       frameBoxSize,
-      frameBoxSize,
+      frameBoxSize
     );
     const frameBoxEdgeGeometry = new THREE.EdgesGeometry(frameBoxGeometry);
     const frameBox = new THREE.LineSegments(
       frameBoxEdgeGeometry,
-      new THREE.LineBasicMaterial({ color: 0x00ffff }),
+      new THREE.LineBasicMaterial({ color: 0x00ffff })
     );
-
+  
     frameBox.position.set(0, 0, 0);
-    scene.add(frameBox);
-  }
+    // scene.add(frameBox);
+  
+    return frameBox; // Return the frameBox object
+  }  
 }
