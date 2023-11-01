@@ -12,12 +12,12 @@ export class ColorMapper {
 
     // Define cloud-like color possibilities
     const colors = [
-      'white',
-      'lighterblue',
-      'gray',
-      'darkblue',
-      'lightblue',
-      'lightcyan',
+      'yellow1',
+      'yellow2',
+      'orange1',
+      'orange2',
+      'red1',
+      'red2',
     ];
 
     // Map the distance to a color
@@ -32,15 +32,42 @@ export class ColorMapper {
     return this.getColorRGB(colors[index]);
   }
 
+  public static getRandomColor() {
+    const colors = [
+      'yellow1',
+      'yellow2',
+      'yellow3',
+      'orange1',
+      'orange2',
+      'red1',
+      'red2',
+    ];
+
+    // Generate a random index to select a color
+    const randomIndex = Math.floor(Math.random() * colors.length);
+
+    // Return the RGB color for the randomly selected color
+    return this.getColorRGB(colors[randomIndex]);
+  }
+
   private static getColorRGB(color) {
     // Map color names to RGB values
     const colorMap = {
-      white: [255, 255, 255],
+      red: [255, 0, 0],
       lighterblue: [173, 216, 250], // Slightly lighter blue
       gray: [169, 169, 169],
       darkblue: [0, 0, 139],
       lightblue: [173, 216, 230],
       lightcyan: [224, 255, 255],
+      orange: [255,165,0],
+
+      yellow1: [255, 255, 0],  // Yellow
+      yellow2: [255, 230, 0],  // Slightly lighter yellow
+      yellow3: [255, 204, 0],
+      orange1: [255, 153, 0],  // Orange
+      orange2: [255, 128, 0],
+      red1: [255, 77, 77],    // Light Red
+      red2: [255, 0, 0]       // Red
     };
 
     return `rgb(${colorMap[color][0]}, ${colorMap[color][1]}, ${colorMap[color][2]})`;

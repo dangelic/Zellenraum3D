@@ -1,17 +1,17 @@
 import * as THREE from 'three';
 import { scene } from '../renderer';
-import { ColorMapper } from './ColorMapper';
+import {ColorMapper} from './ColorMapper'
 
 export class World3D {
   private worldSize: number;
   private cellSize: number;
   private cellOffset: number;
 
-  private cellMesh: THREE.InstancedMesh;
+  private cellMesh: THREE.InstancedMesh
 
-  private matrix: THREE.Matrix4;
+  private matrix: THREE.Matrix4
 
-  private colorMode: string;
+  private colorMode: string
 
   private currentGenerationStates: string[][][];
   private generationCount: number;
@@ -20,12 +20,7 @@ export class World3D {
   public cellMeshContainer: THREE.Object3D;
   public frameBoxContainer: THREE.Object3D;
 
-  public constructor(
-    worldSize: number,
-    cellSize: number,
-    cellOffset: number,
-    colorMode?,
-  ) {
+  public constructor(worldSize: number, cellSize: number, cellOffset: number, colorMode) {
     this.worldSize = worldSize;
     this.cellSize = cellSize;
     this.cellOffset = cellOffset;
@@ -33,9 +28,9 @@ export class World3D {
     this.currentGenerationStates = this.createEmptyGeneration();
     this.generationCount = 0;
 
-    this.colorMode = 'standard';
+    this.colorMode = colorMode
 
-    this.matrix = new THREE.Matrix4();
+    this.matrix = new THREE.Matrix4()
 
     this.cellMeshContainer = new THREE.Object3D();
     this.frameBoxContainer = new THREE.Object3D();
@@ -46,6 +41,7 @@ export class World3D {
     scene.add(this.cellMeshContainer);
     // scene.add(this.frameBoxContainer);
   }
+  
 
   // Getter & Setter
   //
@@ -55,10 +51,7 @@ export class World3D {
     return this.currentGenerationStates;
   }
 
-  public setCurrentGenerationStates(
-    currentGenerationStates: string[][][],
-    isCellVisible: boolean[][][],
-  ): void {
+  public setCurrentGenerationStates(currentGenerationStates: string[][][], isCellVisible: boolean[][][]): void {
     this.generationCount++; // Adjust the counter
     // console.log('Generation Count: ' + this.generationCount);
 
@@ -74,63 +67,59 @@ export class World3D {
     const geometry = new THREE.BoxGeometry(
       this.cellSize,
       this.cellSize,
-      this.cellSize,
+      this.cellSize
     );
-    const material = new THREE.MeshBasicMaterial({ wireframe: true });
+    const material = new THREE.MeshBasicMaterial({ wireframe: false });
     const numInstances = Math.pow(this.worldSize, 3);
     this.cellMesh = new THREE.InstancedMesh(geometry, material, numInstances);
     this.cellMeshContainer.add(this.cellMesh);
-  };
+  }
 
-  private setCellColor = (meshI, x, y, z): void => {
+  private setCellColor = (meshI, x,y,z): void => {
     let rgb;
     switch (this.colorMode) {
-      case 'standard':
-        rgb = ColorMapper.mapPositionToColor(
-          this.currentGenerationStates,
-          x,
-          y,
-          z,
-        );
+      case "standard": 
+        rgb = ColorMapper.mapPositionToColor(this.currentGenerationStates, x, y, z);
+        break;
+      case "random": 
+        rgb = ColorMapper.getRandomColor();
         break;
     }
     this.cellMesh.setColorAt(meshI, new THREE.Color(rgb));
     this.cellMesh.instanceColor.needsUpdate = true;
-  };
+  }
 
   private addCellsToScene = (isCellVisible: boolean[][][]): void => {
     // Create new InstancedMesh and add it to the container
-    this.constructCellMesh();
-
+    this.constructCellMesh()
+  
     for (let x = 0; x < this.worldSize; x++) {
       for (let y = 0; y < this.worldSize; y++) {
         for (let z = 0; z < this.worldSize; z++) {
           let visible = isCellVisible[x][y][z];
-
+  
           if (visible) {
             this.matrix.setPosition(
               (x - this.worldSize / 2) * (this.cellSize + this.cellOffset),
               (y - this.worldSize / 2) * (this.cellSize + this.cellOffset),
-              (z - this.worldSize / 2) * (this.cellSize + this.cellOffset),
+              (z - this.worldSize / 2) * (this.cellSize + this.cellOffset)
             );
-            let meshI =
-              x * this.worldSize * this.worldSize + y * this.worldSize + z;
+            let meshI = x * this.worldSize * this.worldSize + y * this.worldSize + z;
             this.cellMesh.setMatrixAt(meshI, this.matrix);
-            this.setCellColor(meshI, x, y, z);
+            this.setCellColor(meshI, x,y,z)
           }
         }
       }
     }
   };
+  
 
   private createEmptyGeneration(): string[][][] {
     const currentGenerationStates = new Array(this.worldSize);
     for (let x = 0; x < this.worldSize; x++) {
       currentGenerationStates[x] = new Array(this.worldSize);
       for (let y = 0; y < this.worldSize; y++) {
-        currentGenerationStates[x][y] = new Array(this.worldSize).fill(
-          'STATE_0',
-        );
+        currentGenerationStates[x][y] = new Array(this.worldSize).fill("STATE_0");
       }
     }
     return currentGenerationStates;
@@ -142,17 +131,17 @@ export class World3D {
     const frameBoxGeometry = new THREE.BoxGeometry(
       frameBoxSize,
       frameBoxSize,
-      frameBoxSize,
+      frameBoxSize
     );
     const frameBoxEdgeGeometry = new THREE.EdgesGeometry(frameBoxGeometry);
     const frameBox = new THREE.LineSegments(
       frameBoxEdgeGeometry,
-      new THREE.LineBasicMaterial({ color: 0x00ff00 }),
+      new THREE.LineBasicMaterial({ color: 0x00ff00 })
     );
-
+  
     frameBox.position.set(0, 0, 0);
     // scene.add(frameBox);
-
+  
     return frameBox; // Return the frameBox object
-  }
+  }  
 }

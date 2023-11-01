@@ -24,7 +24,7 @@ const cameraDistance = worldSize * cellSize * 1.33; // 0.5 ---- offset replace m
 camera.position.set(0, worldSize / 9, cameraDistance);
 camera.lookAt(0, 0, 0);
 
-const world3D = new World3D(worldSize, cellSize, cellOffset);
+const world3D = new World3D(worldSize, cellSize, cellOffset, "standard");
 const emptyGeneration = world3D.getcurrentGenerationStates();
 // let [currentGenerationStates, isCellVisible] = Seeds.getRandomSeed(
 //   emptyGeneration,
@@ -32,7 +32,7 @@ const emptyGeneration = world3D.getcurrentGenerationStates();
 // );
 let [currentGenerationStates, isCellVisible] = Seeds.getRandomSeed(
   emptyGeneration,
-  0.3,
+  0.4,
 );
 world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
 
@@ -47,7 +47,7 @@ const intervalId = setInterval(() => {
   } else {
     clearInterval(intervalId);
   }
-}, 100); //
+}, 30); //
 
 scene.add(world3D.cellMeshContainer);
 scene.add(world3D.frameBoxContainer);
@@ -56,6 +56,8 @@ scene.add(world3D.frameBoxContainer);
 const animate = () => {
   requestAnimationFrame(animate);
   world3D.cellMeshContainer.rotation.y += 0.005; // Rotate counter-clockwise
+  //world3D.frameBoxContainer.rotation.y += 0.005; // Rotate counter-clockwise
+
   renderer.render(scene, camera);
 };
 
