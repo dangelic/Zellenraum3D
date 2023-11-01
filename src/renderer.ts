@@ -16,12 +16,16 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000,
 );
-camera.position.set(0, 3, 12);
-camera.lookAt(0, 0, 0);
-
-let worldSize = 40;
+let worldSize = 50;
 let cellOffset = 0;
 const cellSize = 0.2;
+
+
+const cameraDistance = worldSize * (cellSize ) *1.33; // 0.5 ---- offset replace me
+camera.position.set(0, worldSize / 9, cameraDistance);
+camera.lookAt(0, 0, 0);
+
+
 
 const world3D = new World3D(worldSize, cellSize, cellOffset);
 const emptyGeneration = world3D.getCurrentGeneration();
@@ -37,7 +41,7 @@ const intervalId = setInterval(() => {
   } else {
     clearInterval(intervalId);
   }
-}, 1000); //
+}, 250); //
 
 // Render the scene
 const animate = () => {

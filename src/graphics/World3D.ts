@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { scene } from '../renderer';
+import {ColorMapper} from './ColorMapper'
 
 export class World3D {
   private worldSize: number;
@@ -47,7 +48,7 @@ export class World3D {
       this.cellSize,
       this.cellSize,
     );
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const material = new THREE.MeshBasicMaterial({wireframe: false});
     const numInstances = Math.pow(this.worldSize, 3); // cubic relation to worldSize (x*y*z cells)
     const cellMesh = new THREE.InstancedMesh(geometry, material, numInstances);
     scene.add(cellMesh);
@@ -65,10 +66,15 @@ export class World3D {
               (y - this.worldSize / 2) * (this.cellSize + this.cellOffset),
               (z - this.worldSize / 2) * (this.cellSize + this.cellOffset),
             );
+            let meshI = x * this.worldSize * this.worldSize + y * this.worldSize + z
             cellMesh.setMatrixAt(
-              x * this.worldSize * this.worldSize + y * this.worldSize + z,
+              meshI,
               matrix,
             );
+            let rgb;
+            rgb = ColorMapper.mapPositionToColor(this.currentGeneration, x,y,z)
+            cellMesh.setColorAt(meshI, new THREE.Color(rgb))
+            cellMesh.instanceColor.needsUpdate = true;
           }
         }
       }
