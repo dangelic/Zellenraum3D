@@ -20,31 +20,37 @@ let worldSize = 50;
 let cellOffset = 0;
 const cellSize = 0.2;
 
-
-const cameraDistance = worldSize * (cellSize ) *1.33; // 0.5 ---- offset replace me
+const cameraDistance = worldSize * cellSize * 1.33; // 0.5 ---- offset replace me
 camera.position.set(0, worldSize / 9, cameraDistance);
 camera.lookAt(0, 0, 0);
 
-
-
 const world3D = new World3D(worldSize, cellSize, cellOffset);
 const emptyGeneration = world3D.getcurrentGenerationStates();
-let [currentGenerationStates, isCellVisible] = Seeds.getRandomSeed(emptyGeneration, 0.5);
+// let [currentGenerationStates, isCellVisible] = Seeds.getRandomSeed(
+//   emptyGeneration,
+//   0.5,
+// );
+let [currentGenerationStates, isCellVisible] = Seeds.getRandomSeed(
+  emptyGeneration,
+  0.3,
+);
 world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
 
 let condition = true;
 
 const intervalId = setInterval(() => {
   if (condition) {
-    [currentGenerationStates, isCellVisible] = Rules.applyClouds(currentGenerationStates);
+    [currentGenerationStates, isCellVisible] = Rules.apply445(
+      currentGenerationStates,
+    );
     world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
   } else {
     clearInterval(intervalId);
   }
-}, 250); //
+}, 100); //
 
-scene.add(world3D.cellMeshContainer)
-scene.add(world3D.frameBoxContainer)
+scene.add(world3D.cellMeshContainer);
+scene.add(world3D.frameBoxContainer);
 
 // Render the scene
 const animate = () => {

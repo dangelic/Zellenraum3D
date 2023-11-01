@@ -7,14 +7,23 @@ export class ColorMapper {
 
     // Calculate the distance from the center
     const distance = Math.sqrt(
-      (x - centerX) ** 2 + (y - centerY) ** 2 + (z - centerZ) ** 2
+      (x - centerX) ** 2 + (y - centerY) ** 2 + (z - centerZ) ** 2,
     );
 
     // Define cloud-like color possibilities
-    const colors = ['white', 'lighterblue', 'gray', 'darkblue', 'lightblue', 'lightcyan'];
+    const colors = [
+      'white',
+      'lighterblue',
+      'gray',
+      'darkblue',
+      'lightblue',
+      'lightcyan',
+    ];
 
     // Map the distance to a color
-    const colorIndex = Math.floor((distance / Math.max(centerX, centerY, centerZ)) * colors.length);
+    const colorIndex = Math.floor(
+      (distance / Math.max(centerX, centerY, centerZ)) * colors.length,
+    );
 
     // Ensure the colorIndex is within bounds
     const index = Math.min(colors.length - 1, Math.max(0, colorIndex));
