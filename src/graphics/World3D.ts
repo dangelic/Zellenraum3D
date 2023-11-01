@@ -13,7 +13,7 @@ export class World3D {
 
   private colorMode: string
 
-  private currentGeneration: boolean[][][];
+  private currentGenerationStates: string[][][];
   private generationCount: number;
 
   private frameBox: THREE.LineSegments;
@@ -25,7 +25,7 @@ export class World3D {
     this.cellSize = cellSize;
     this.cellOffset = cellOffset;
 
-    this.currentGeneration = this.createEmptyGeneration();
+    this.currentGenerationStates = this.createEmptyGeneration();
     this.generationCount = 0;
 
     this.colorMode = "standard"
@@ -47,16 +47,16 @@ export class World3D {
   //
   //
 
-  public getCurrentGeneration(): boolean[][][] {
-    return this.currentGeneration;
+  public getcurrentGenerationStates(): string[][][] {
+    return this.currentGenerationStates;
   }
 
-  public setCurrentGeneration(currentGeneration: boolean[][][]): void {
+  public setCurrentGenerationStates(currentGenerationStates: string[][][], isCellVisible: boolean[][][]): void {
     this.generationCount++; // Adjust the counter
-    console.log('Generation Count: ' + this.generationCount);
+    // console.log('Generation Count: ' + this.generationCount);
 
-    this.currentGeneration = currentGeneration;
-    this.addCellsToScene();
+    this.currentGenerationStates = currentGenerationStates;
+    this.addCellsToScene(isCellVisible);
   }
 
   private constructCellMesh = (): void => {
@@ -79,23 +79,23 @@ export class World3D {
     let rgb;
     switch (this.colorMode) {
       case "standard": 
-        rgb = ColorMapper.mapPositionToColor(this.currentGeneration, x, y, z);
+        rgb = ColorMapper.mapPositionToColor(this.currentGenerationStates, x, y, z);
         break;
     }
     this.cellMesh.setColorAt(meshI, new THREE.Color(rgb));
     this.cellMesh.instanceColor.needsUpdate = true;
   }
 
-  private addCellsToScene = (): void => {
+  private addCellsToScene = (isCellVisible: boolean[][][]): void => {
     // Create new InstancedMesh and add it to the container
     this.constructCellMesh()
   
     for (let x = 0; x < this.worldSize; x++) {
       for (let y = 0; y < this.worldSize; y++) {
         for (let z = 0; z < this.worldSize; z++) {
-          let isCellVisible = this.currentGeneration[x][y][z];
+          let visible = isCellVisible[x][y][z];
   
-          if (isCellVisible) {
+          if (visible) {
             this.matrix.setPosition(
               (x - this.worldSize / 2) * (this.cellSize + this.cellOffset),
               (y - this.worldSize / 2) * (this.cellSize + this.cellOffset),
@@ -111,15 +111,15 @@ export class World3D {
   };
   
 
-  private createEmptyGeneration(): boolean[][][] {
-    const currentGeneration = new Array(this.worldSize);
+  private createEmptyGeneration(): string[][][] {
+    const currentGenerationStates = new Array(this.worldSize);
     for (let x = 0; x < this.worldSize; x++) {
-      currentGeneration[x] = new Array(this.worldSize);
+      currentGenerationStates[x] = new Array(this.worldSize);
       for (let y = 0; y < this.worldSize; y++) {
-        currentGeneration[x][y] = new Array(this.worldSize).fill(false);
+        currentGenerationStates[x][y] = new Array(this.worldSize).fill("STATE_0");
       }
     }
-    return currentGeneration;
+    return currentGenerationStates;
   }
 
   public createFramebox(): THREE.LineSegments {

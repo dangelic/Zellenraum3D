@@ -1,9 +1,10 @@
 export class Seeds {
   static getRandomSeed(
-    world: boolean[][][],
+    world: string[][][],
     probability: number,
-  ): boolean[][][] {
-    const seededWorld: boolean[][][] = [];
+  ): [string[][][], boolean[][][]] {
+    const worldSize = world.length
+    const seededWorld: string[][][] = [];
 
     for (let x = 0; x < world.length; x++) {
       seededWorld[x] = [];
@@ -16,14 +17,32 @@ export class Seeds {
           const randomValue = Math.random();
 
           // Set the cell value to true if the random number is less than the probability
-          seededWorld[x][y][z] = randomValue < probability;
+
+          if (randomValue < probability) {
+            seededWorld[x][y][z] = "STATE_1"
+          }
+            else {
+              seededWorld[x][y][z] = "STATE_0"
+            }
         }
       }
     }
+    let isCellVisible = new Array(worldSize);
+for (let x = 0; x < worldSize; x++) {
+  isCellVisible[x] = new Array(worldSize);
+  for (let y = 0; y < worldSize; y++) {
+    isCellVisible[x][y] = new Array(worldSize);
+    for (let z = 0; z < worldSize; z++) {
+      if (seededWorld[x][y][z] === "STATE_1") isCellVisible[x][y][z] = true;
+    }
+  }
+}
 
-    return seededWorld;
+    return [seededWorld, isCellVisible];
   }
 
+
+  // TODO: Turn to state array
   static getClusteredSeed(
     world: boolean[][][],
     clusterSize: number,
@@ -48,8 +67,9 @@ export class Seeds {
           clusteredWorld[x][y][z] = distance < clusterSize;
         }
       }
-    }
+    }    
 
     return clusteredWorld;
+
   }
 }

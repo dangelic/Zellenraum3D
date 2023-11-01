@@ -1,15 +1,15 @@
 import { Neighborhood } from './Neighborhood';
 
 export class Rules {
-  static applyClouds(currentGeneration: boolean[][][]): boolean[][][] {
-    const worldSize = currentGeneration.length;
+  static applyClouds(currentGenerationStates: string[][][]): [string[][][], boolean[][][]] {
+    const worldSize = currentGenerationStates.length;
   
     // Create a new world array to store the next state
     const nextGeneration = new Array(worldSize);
     for (let x = 0; x < worldSize; x++) {
       nextGeneration[x] = new Array(worldSize);
       for (let y = 0; y < worldSize; y++) {
-        nextGeneration[x][y] = new Array(worldSize).fill(false);
+        nextGeneration[x][y] = new Array(worldSize).fill("STATE_0");
       }
     }
   
@@ -28,32 +28,43 @@ export class Rules {
               nz >= 0 &&
               nz < worldSize
             ) {
-              if (currentGeneration[nx][ny][nz]) {
+              if (currentGenerationStates[nx][ny][nz] === "STATE_1") {
                 aliveNeighbors++;
               }
             }
           }
   
           // Apply rules based on the count of alive neighbors
-          if (currentGeneration[x][y][z]) {
+          if (currentGenerationStates[x][y][z] === "STATE_1") {
             if (
               aliveNeighbors >= 13 &&
               aliveNeighbors <= 26
             ) {
-              nextGeneration[x][y][z] = true; // Cell survives with the specified range of neighbors
+              nextGeneration[x][y][z] = "STATE_1"; // Cell survives with the specified range of neighbors
             }
           } else {
             if (
               (aliveNeighbors >= 13 && aliveNeighbors <= 14) ||
               (aliveNeighbors >= 17 && aliveNeighbors <= 19)
             ) {
-              nextGeneration[x][y][z] = true; // Cell is born in an empty location with the specified range of neighbors
+              nextGeneration[x][y][z] = "STATE_1"; // Cell is born in an empty location with the specified range of neighbors
             }
           }
         }
       }
     }
-  
-    return nextGeneration;
+
+
+    let isCellVisible = new Array(worldSize);
+for (let x = 0; x < worldSize; x++) {
+  isCellVisible[x] = new Array(worldSize);
+  for (let y = 0; y < worldSize; y++) {
+    isCellVisible[x][y] = new Array(worldSize);
+    for (let z = 0; z < worldSize; z++) {
+      if (nextGeneration[x][y][z] === "STATE_1") isCellVisible[x][y][z] = true;
+    }
+  }
+}
+    return [nextGeneration, isCellVisible]
   }  
 }

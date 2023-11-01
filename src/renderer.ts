@@ -28,16 +28,16 @@ camera.lookAt(0, 0, 0);
 
 
 const world3D = new World3D(worldSize, cellSize, cellOffset);
-const emptyGeneration = world3D.getCurrentGeneration();
-let currentGeneration = Seeds.getRandomSeed(emptyGeneration, 0.5);
-world3D.setCurrentGeneration(currentGeneration);
+const emptyGeneration = world3D.getcurrentGenerationStates();
+let [currentGenerationStates, isCellVisible] = Seeds.getRandomSeed(emptyGeneration, 0.5);
+world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
 
 let condition = true;
 
 const intervalId = setInterval(() => {
   if (condition) {
-    currentGeneration = Rules.applyClouds(currentGeneration);
-    world3D.setCurrentGeneration(currentGeneration);
+    [currentGenerationStates, isCellVisible] = Rules.applyClouds(currentGenerationStates);
+    world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
   } else {
     clearInterval(intervalId);
   }
