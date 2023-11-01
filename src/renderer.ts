@@ -1,48 +1,51 @@
 import * as THREE from 'three';
-import { World3D } from './graphics/World3D';
 import { Seeds } from './graphics/Seeds';
-import { GenerationLoop } from './graphics/GenerationLoop';
+import { World3D } from './graphics/World3D';
+import { Rules } from './rules/Rules';
 
-// -- ThreeJS
-// Scene
-const scene = new THREE.Scene();
 // Renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Load 3D Grid-World instance as a singleton
-const world3D = World3D.getInstance();
-
-// Setup the Camera
+// Scene & Camera
+const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
   0.1,
   1000,
 );
-const cameraDistance = world3D.getWorldSize();
-camera.position.set(cameraDistance, cameraDistance, cameraDistance); // Position the camera relative to World-Size
-camera.lookAt(0, 0, 0); // Point the camera at the center of the scene
+camera.position.set(0, 3, 12);
+camera.lookAt(0, 0, 0);
 
-// Start the demo to create the cells
-// world3D.startDemo(1);
+let worldSize = 40;
+let cellOffset = 0;
+const cellSize = 0.2;
 
-// Animation loop
+const world3D = new World3D(worldSize, cellSize, cellOffset);
+const emptyGeneration = world3D.getCurrentGeneration();
+let currentGeneration = Seeds.getRandomSeed(emptyGeneration, 0.5);
+world3D.setCurrentGeneration(currentGeneration);
+
+let condition = true;
+
+const intervalId = setInterval(() => {
+  if (condition) {
+    currentGeneration = Rules.applyClouds(currentGeneration);
+    world3D.setCurrentGeneration(currentGeneration);
+  } else {
+    clearInterval(intervalId);
+  }
+}, 1000); //
+
+// Render the scene
 const animate = () => {
   requestAnimationFrame(animate);
-  scene.rotation.y += 0.005; // Rotate 3D world around the Y-axis
+  scene.rotation.y += 0.005; // Rotate counter-clockwise
   renderer.render(scene, camera);
 };
-let cellArray = world3D.getCellArray()
-cellArray = Seeds.getClusteredSeed(cellArray, 10)
-GenerationLoop.startGenerationLoop(cellArray)
 
-animate();
-
-// // Apply materials to cells after the cells are created
-// setTimeout(() => {
-//   //world3D.applyMaterialsToCells();
-// }, 1000);
+animate(); // Start...
 
 export { scene };

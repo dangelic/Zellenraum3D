@@ -43,7 +43,7 @@ export class Seeds {
         for (let z = 0; z < world[0][0].length; z++) {
           // Set the cell value to true if it is within the cluster size of the center
           const distance = Math.sqrt(
-            (x - centerX) ** 2 + (y - centerY) ** 2 + (z - centerZ) ** 2
+            (x - centerX) ** 2 + (y - centerY) ** 2 + (z - centerZ) ** 2,
           );
           clusteredWorld[x][y][z] = distance < clusterSize;
         }
