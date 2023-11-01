@@ -7,14 +7,20 @@ export class World3D {
   private cellSize: number;
   private cellOffset: number;
 
+  private cellMesh: THREE.InstancedMesh
+
+  private matrix: THREE.Matrix4
+
+  private colorMode: string
+
   private currentGeneration: boolean[][][];
   private generationCount: number;
 
   private frameBox: THREE.LineSegments;
-  public cellContainer: THREE.Object3D;
+  public cellMeshContainer: THREE.Object3D;
   public frameBoxContainer: THREE.Object3D;
 
-  public constructor(worldSize: number, cellSize: number, cellOffset: number) {
+  public constructor(worldSize: number, cellSize: number, cellOffset: number, colorMode?) {
     this.worldSize = worldSize;
     this.cellSize = cellSize;
     this.cellOffset = cellOffset;
@@ -22,13 +28,17 @@ export class World3D {
     this.currentGeneration = this.createEmptyGeneration();
     this.generationCount = 0;
 
-    this.cellContainer = new THREE.Object3D();
+    this.colorMode = "standard"
+
+    this.matrix = new THREE.Matrix4()
+
+    this.cellMeshContainer = new THREE.Object3D();
     this.frameBoxContainer = new THREE.Object3D();
 
     this.frameBox = this.createFramebox();
     this.frameBoxContainer.add(this.frameBox);
 
-    scene.add(this.cellContainer);
+    scene.add(this.cellMeshContainer);
     // scene.add(this.frameBoxContainer);
   }
   
@@ -49,10 +59,11 @@ export class World3D {
     this.addCellsToScene();
   }
 
-  private addCellsToScene = (): void => {
-    // Create new InstancedMesh and add it to the container
-    this.cellContainer.clear();
+  private constructCellMesh = (): void => {
+    // Clear current cell mesh setup
+    this.cellMeshContainer.clear();
 
+    // Initialize new cell mesh and add it to the scene
     const geometry = new THREE.BoxGeometry(
       this.cellSize,
       this.cellSize,
@@ -60,27 +71,39 @@ export class World3D {
     );
     const material = new THREE.MeshBasicMaterial({ wireframe: true });
     const numInstances = Math.pow(this.worldSize, 3);
-    const cellMesh = new THREE.InstancedMesh(geometry, material, numInstances);
-    this.cellContainer.add(cellMesh);
+    this.cellMesh = new THREE.InstancedMesh(geometry, material, numInstances);
+    this.cellMeshContainer.add(this.cellMesh);
+  }
+
+  private setCellColor = (meshI, x,y,z): void => {
+    let rgb;
+    switch (this.colorMode) {
+      case "standard": 
+        rgb = ColorMapper.mapPositionToColor(this.currentGeneration, x, y, z);
+        break;
+    }
+    this.cellMesh.setColorAt(meshI, new THREE.Color(rgb));
+    this.cellMesh.instanceColor.needsUpdate = true;
+  }
+
+  private addCellsToScene = (): void => {
+    // Create new InstancedMesh and add it to the container
+    this.constructCellMesh()
   
     for (let x = 0; x < this.worldSize; x++) {
       for (let y = 0; y < this.worldSize; y++) {
         for (let z = 0; z < this.worldSize; z++) {
           let isCellVisible = this.currentGeneration[x][y][z];
   
-          const matrix = new THREE.Matrix4();
           if (isCellVisible) {
-            matrix.setPosition(
+            this.matrix.setPosition(
               (x - this.worldSize / 2) * (this.cellSize + this.cellOffset),
               (y - this.worldSize / 2) * (this.cellSize + this.cellOffset),
               (z - this.worldSize / 2) * (this.cellSize + this.cellOffset)
             );
             let meshI = x * this.worldSize * this.worldSize + y * this.worldSize + z;
-            cellMesh.setMatrixAt(meshI, matrix);
-            let rgb;
-            rgb = ColorMapper.mapPositionToColor(this.currentGeneration, x, y, z);
-            cellMesh.setColorAt(meshI, new THREE.Color(rgb));
-            cellMesh.instanceColor.needsUpdate = true;
+            this.cellMesh.setMatrixAt(meshI, this.matrix);
+            this.setCellColor(meshI, x,y,z)
           }
         }
       }

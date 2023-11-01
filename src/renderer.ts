@@ -43,13 +43,13 @@ const intervalId = setInterval(() => {
   }
 }, 250); //
 
-scene.add(world3D.cellContainer)
+scene.add(world3D.cellMeshContainer)
 scene.add(world3D.frameBoxContainer)
 
 // Render the scene
 const animate = () => {
   requestAnimationFrame(animate);
-  world3D.cellContainer.rotation.y += 0.005; // Rotate counter-clockwise
+  world3D.cellMeshContainer.rotation.y += 0.005; // Rotate counter-clockwise
   renderer.render(scene, camera);
 };
 
