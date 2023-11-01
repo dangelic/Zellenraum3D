@@ -110,7 +110,7 @@ export class World3D {
     const frameBoxEdgeGeometry = new THREE.EdgesGeometry(frameBoxGeometry);
     const frameBox = new THREE.LineSegments(
       frameBoxEdgeGeometry,
-      new THREE.LineBasicMaterial({ color: 0x00ffff })
+      new THREE.LineBasicMaterial({ color: 0x00ff00 })
     );
   
     frameBox.position.set(0, 0, 0);
