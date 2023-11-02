@@ -17,8 +17,8 @@ const cellOffset = 0;
 const cellSize = 0.2;
 
 // Position the camera
-const cameraDistance = worldSize * cellSize * 1.22;
-camera.position.set(0, worldSize / 9, cameraDistance);
+const cameraDistance = worldSize * cellSize *1.42;
+camera.position.set(0, worldSize / 12, cameraDistance);
 camera.lookAt(0, 0, 0);
 
 // Create a 3D world with a specific size, cell size, and cell offset
