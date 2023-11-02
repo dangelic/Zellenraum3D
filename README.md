@@ -1,9 +1,8 @@
-# Zellenraum3D: An Electron App for 3D-Cellular-Automata Simulation
-
-![box](assets/box.png)
-
+# Zellenraum3D: Electron App for 3D-Cellular-Automata Simulation
 Zellenraum3D is a captivating 3D visualization of Cellular Automataa as, powered by Electron.js and THREE.js.
 It provides a dynamic and interactive representation of evolving cellular structures.
+
+![box](assets/box.png)
 
 Got inspired by the *Guru* of 3D Cellular Automata Visualization: [Softology](https://softologyblog.wordpress.com/2019/12/28/3d-cellular-automata-3/)
 
