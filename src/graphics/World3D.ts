@@ -4,7 +4,7 @@ import { ColorMapper } from "./ColorMapper";
 import { GenerationStatesMatrix, CellVisibilityMatrix } from "../types/Types";
 
 /**
- * This class represents a 3D box world where cells are trapped in.
+ * Class representing a 3D box world where cells are trapped in.
  * It is responsible for creating all visible elements of the core visualization (outer framebox, cells, ...)
  */
 export class World3D {
@@ -106,7 +106,7 @@ export class World3D {
      * @param y - The Y-coordinate of the cell's position in the world.
      * @param z - The Z-coordinate of the cell's position in the world.
      */
-    private setCellColor = (meshI, x, y, z): void => {
+    private setCellColor = (meshI: number, x: number, y: number, z: number): void => {
         let rgb;
         switch (this.colorMode) {
             case "standard":

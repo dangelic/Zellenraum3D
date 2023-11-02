@@ -2,7 +2,7 @@ import { Neighborhood } from "./Neighborhood";
 import { GenerationStatesMatrix, CellVisibilityMatrix } from "../types/Types";
 
 /**
- * This class collects all applicable rules for cell state transitions, affecting cell survival.
+ * Class collecting all applicable rules for cell state transitions, affecting cell survival.
  * A State-System is implemented to realize Binary- and Multi-State-Rules:
  *          - Binary: Only two states: STATE_0 (dead) and STATE_1 (alive) (e.g. Clouds)
  *          - Multiple-State: Different states can be applied saved (e.g. State 4 fades to 3, 2, 1 ... in Rule-445)
