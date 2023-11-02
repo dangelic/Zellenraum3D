@@ -1,4 +1,17 @@
+/**
+ * The Neighborhood class provides methods to calculate the neighborhood of a given cell in a 3D space.
+ */
 export class Neighborhood {
+    /**
+     * Get the von Neumann neighborhood of a cell in a 3D space.
+     *
+     * The von Neumann neighborhood includes cells in the North, South, Above, Under, East, and West positions.
+     *
+     * @param x - The x-coordinate of the cell.
+     * @param y - The y-coordinate of the cell.
+     * @param z - The z-coordinate of the cell.
+     * @returns An array of coordinates representing the von Neumann neighborhood.
+     */
     static getvonNeumannNeighborhood(x: number, y: number, z: number): [number, number, number][] {
         const neighbors: [number, number, number][] = [];
 
@@ -24,10 +37,21 @@ export class Neighborhood {
         return neighbors;
     }
 
+    /**
+     * Get the Moore neighborhood of a cell in a 3D space.
+     *
+     * The Moore neighborhood includes cells in a 3x3x3 cube centered around the given cell.
+     *
+     * @param x - The x-coordinate of the cell.
+     * @param y - The y-coordinate of the cell.
+     * @param z - The z-coordinate of the cell.
+     * @returns An array of coordinates representing the Moore neighborhood.
+     */
     static getMooreNeighborhood(x: number, y: number, z: number): [number, number, number][] {
         const neighbors: [number, number, number][] = [];
 
-        // Define relative positions for Moore neighbors
+        // 26 possible positions in a 3x3x3 cube (the 27th is the viewed cell itself)
+        // Coordinates are relative to the center cell (x, y, z)
         const relativePositions = [
             [-1, -1, -1], // Southwest Down
             [-1, -1, 0], // West Down
