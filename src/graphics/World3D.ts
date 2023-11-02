@@ -67,7 +67,7 @@ export class World3D {
 
         // Initialize new cell mesh and add it to the scene
         const geometry = new THREE.BoxGeometry(this.cellSize, this.cellSize, this.cellSize);
-        const material = new THREE.MeshBasicMaterial({ wireframe: false });
+        const material = new THREE.MeshStandardMaterial({ wireframe: false });
         const numInstances = Math.pow(this.worldSize, 3);
         this.cellMesh = new THREE.InstancedMesh(geometry, material, numInstances);
         this.cellMeshContainer.add(this.cellMesh);
