@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { Seeds } from "./graphics/Seeds";
 import { World3D } from "./graphics/World3D";
 import { Rules } from "./rules/Rules";
+import { GenerationStatesMatrix, CellVisibilityMatrix } from "./types/Types";
 
 // Create a WebGLRenderer for rendering the 3D scene
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -25,7 +26,7 @@ camera.lookAt(0, 0, 0);
 const world3D = new World3D(worldSize, cellSize, cellOffset, "5state");
 
 // Generate an initial 3D world state with some cells alive
-const emptyGeneration = world3D.getcurrentGenerationStates();
+const emptyGeneration: GenerationStatesMatrix = world3D.getCurrentGenerationStates();
 let [currentGenerationStates, isCellVisible] = Seeds.getClusteredSeed(emptyGeneration, 10, 0.1);
 world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
 

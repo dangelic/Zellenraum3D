@@ -1,4 +1,5 @@
 import { Neighborhood } from "./Neighborhood";
+import { GenerationStatesMatrix, CellVisibilityMatrix } from "../types/Types";
 
 /**
  * This class collects all applicable rules for cell state transitions, affecting cell survival.
@@ -14,7 +15,9 @@ export class Rules {
      * @param currentGenerationStates - The current state of the cellular automaton.
      * @returns A tuple containing the next generation states and the visibility of cells.
      */
-    public static apply445(currentGenerationStates: string[][][]): [string[][][], boolean[][][]] {
+    public static apply445(
+        currentGenerationStates: GenerationStatesMatrix,
+    ): [GenerationStatesMatrix, CellVisibilityMatrix] {
         const worldSize = currentGenerationStates.length;
         const nextGeneration = this.initializeNextGenerationArray(currentGenerationStates);
 
@@ -64,8 +67,8 @@ export class Rules {
      * @returns A tuple containing the next generation states and the visibility of cells.
      */
     public static applyClouds(
-        currentGenerationStates: string[][][],
-    ): [string[][][], boolean[][][]] {
+        currentGenerationStates: GenerationStatesMatrix,
+    ): [GenerationStatesMatrix, CellVisibilityMatrix] {
         // Initialize the next generation with "STATE_0"
         const worldSize = currentGenerationStates.length;
         const nextGeneration = this.initializeNextGenerationArray(currentGenerationStates);
@@ -107,7 +110,7 @@ export class Rules {
      * @param currentGenerationStates - The current state of the cellular automaton.
      * @returns The initial nextGeneration Array.
      */
-    private static initializeNextGenerationArray(currentGenerationStates): string[][][] {
+    private static initializeNextGenerationArray(currentGenerationStates): GenerationStatesMatrix {
         const worldSize = currentGenerationStates.length;
         const nextGeneration = new Array(worldSize);
         for (let x = 0; x < worldSize; x++) {
@@ -127,7 +130,7 @@ export class Rules {
      * @returns The count of alive neighbors.
      */
     private static countAliveNeighbors(
-        currentGenerationStates: string[][][],
+        currentGenerationStates: GenerationStatesMatrix,
         neighbors: number[][],
     ): number {
         const worldSize = currentGenerationStates.length;
@@ -157,9 +160,9 @@ export class Rules {
      * @returns A boolean matrix indicating cell visibility.
      */
     private static calculateIsCellVisible(
-        nextGeneration: string[][][],
+        nextGeneration: GenerationStatesMatrix,
         visibleStates: string[],
-    ): boolean[][][] {
+    ): CellVisibilityMatrix {
         const worldSize = nextGeneration.length;
         const isCellVisible = new Array(worldSize);
         for (let x = 0; x < worldSize; x++) {

@@ -1,7 +1,12 @@
 import * as THREE from "three";
 import { scene } from "../renderer";
 import { ColorMapper } from "./ColorMapper";
+import { GenerationStatesMatrix, CellVisibilityMatrix } from "../types/Types";
 
+/**
+ * This class represents a 3D box world where cells are trapped in.
+ * It is responsible for creating all visible elements of the core visualization (outer framebox, cells, ...)
+ */
 export class World3D {
     private worldSize: number;
     private cellSize: number;
@@ -13,13 +18,21 @@ export class World3D {
 
     private colorMode: string;
 
-    private currentGenerationStates: string[][][];
+    private currentGenerationStates: GenerationStatesMatrix;
     private generationCount: number;
 
     private frameBox: THREE.LineSegments;
     public cellMeshContainer: THREE.Object3D;
     public frameBoxContainer: THREE.Object3D;
 
+    /**
+     * CONSTRUCTOR
+     *
+     * @param worldSize - The size of the 3D world.
+     * @param cellSize - The size of each cell.
+     * @param cellOffset - The offset between cells.
+     * @param colorMode - The color mode for cell visualization (see: ./ColorMapper.ts for enum)
+     */
     public constructor(worldSize: number, cellSize: number, cellOffset: number, colorMode) {
         this.worldSize = worldSize;
         this.cellSize = cellSize;
@@ -39,20 +52,28 @@ export class World3D {
         this.frameBoxContainer.add(this.frameBox);
 
         scene.add(this.cellMeshContainer);
-        // scene.add(this.frameBoxContainer);
     }
 
     // Getter & Setter
-    //
-    //
 
-    public getcurrentGenerationStates(): string[][][] {
+    /**
+     * Getter for current generation's states.
+     *
+     * @returns The current generation's states.
+     */
+    public getCurrentGenerationStates(): GenerationStatesMatrix {
         return this.currentGenerationStates;
     }
 
+    /**
+     * Setter for current generation's states and update the visualization.
+     *
+     * @param currentGenerationStates - The new generation's states.
+     * @param isCellVisible - The visibility matrix for cells.
+     */
     public setCurrentGenerationStates(
-        currentGenerationStates: string[][][],
-        isCellVisible: boolean[][][],
+        currentGenerationStates: GenerationStatesMatrix,
+        isCellVisible: CellVisibilityMatrix,
     ): void {
         this.generationCount++; // Adjust the counter
         // console.log('Generation Count: ' + this.generationCount);
@@ -61,18 +82,30 @@ export class World3D {
         this.addCellsToScene(isCellVisible);
     }
 
+    /**
+     * Constructs the cell mesh cubes using InstancedMesh
+     *
+     */
     private constructCellMesh = (): void => {
         // Clear current cell mesh setup
         this.cellMeshContainer.clear();
 
         // Initialize new cell mesh and add it to the scene
         const geometry = new THREE.BoxGeometry(this.cellSize, this.cellSize, this.cellSize);
-        const material = new THREE.MeshStandardMaterial({ wireframe: false });
+        const material = new THREE.MeshStandardMaterial({ wireframe: false }); // Set wireframe: true for testing performance
         const numInstances = Math.pow(this.worldSize, 3);
         this.cellMesh = new THREE.InstancedMesh(geometry, material, numInstances);
         this.cellMeshContainer.add(this.cellMesh);
     };
 
+    /**
+     * Set the color of a cell at a specific position in the cell mesh based on the color mode.
+     *
+     * @param meshI - The index of the cell in the instanced mesh.
+     * @param x - The X-coordinate of the cell's position in the world.
+     * @param y - The Y-coordinate of the cell's position in the world.
+     * @param z - The Z-coordinate of the cell's position in the world.
+     */
     private setCellColor = (meshI, x, y, z): void => {
         let rgb;
         switch (this.colorMode) {
@@ -87,11 +120,16 @@ export class World3D {
                 break;
         }
         this.cellMesh.setColorAt(meshI, new THREE.Color(rgb));
-        this.cellMesh.instanceColor.needsUpdate = true;
+        this.cellMesh.instanceColor.needsUpdate = true; // Important to not forget this when handling InstancedMeshes
     };
 
-    private addCellsToScene = (isCellVisible: boolean[][][]): void => {
-        // Create new InstancedMesh and add it to the container
+    /**
+     * Add cells to the 3D scene based on their visibility and set their positions and colors.
+     *
+     * @param isCellVisible - The visibility matrix for cells.
+     */
+    private addCellsToScene(isCellVisible: CellVisibilityMatrix): void {
+        // Create a new InstancedMesh and add it to the container
         this.constructCellMesh();
 
         for (let x = 0; x < this.worldSize; x++) {
@@ -100,21 +138,32 @@ export class World3D {
                     let visible = isCellVisible[x][y][z];
 
                     if (visible) {
+                        // Calculate the position for the cell based on its coordinates
                         this.matrix.setPosition(
                             (x - this.worldSize / 2) * (this.cellSize + this.cellOffset),
                             (y - this.worldSize / 2) * (this.cellSize + this.cellOffset),
                             (z - this.worldSize / 2) * (this.cellSize + this.cellOffset),
                         );
+
+                        // Calculate the index of the cell in the instanced mesh
                         let meshI = x * this.worldSize * this.worldSize + y * this.worldSize + z;
+
+                        // Set the cell's position and color
                         this.cellMesh.setMatrixAt(meshI, this.matrix);
                         this.setCellColor(meshI, x, y, z);
                     }
                 }
             }
         }
-    };
+    }
 
-    private createEmptyGeneration(): string[][][] {
+    /**
+     * Create an empty generation with all cells in "STATE_0".
+     * The first generation is always this empty one.
+     *
+     * @returns The empty generation's states.
+     */
+    private createEmptyGeneration(): GenerationStatesMatrix {
         const currentGenerationStates = new Array(this.worldSize);
         for (let x = 0; x < this.worldSize; x++) {
             currentGenerationStates[x] = new Array(this.worldSize);
@@ -125,6 +174,11 @@ export class World3D {
         return currentGenerationStates;
     }
 
+    /**
+     * Create a framebox for the 3D world.
+     *
+     * @returns The framebox as a LineSegments object.
+     */
     public createFramebox(): THREE.LineSegments {
         const frameBoxSize = this.worldSize * (this.cellSize + this.cellOffset) + this.cellSize;
         const frameBoxGeometry = new THREE.BoxGeometry(frameBoxSize, frameBoxSize, frameBoxSize);
@@ -135,7 +189,6 @@ export class World3D {
         );
 
         frameBox.position.set(0, 0, 0);
-        // scene.add(frameBox);
 
         return frameBox; // Return the frameBox object
     }
