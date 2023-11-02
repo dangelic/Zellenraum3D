@@ -1,8 +1,8 @@
 // Import necessary modules
-import * as THREE from 'three';
-import { Seeds } from './graphics/Seeds';
-import { World3D } from './graphics/World3D';
-import { Rules } from './rules/Rules';
+import * as THREE from "three";
+import { Seeds } from "./graphics/Seeds";
+import { World3D } from "./graphics/World3D";
+import { Rules } from "./rules/Rules";
 
 // Create a WebGLRenderer for rendering the 3D scene
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -17,12 +17,12 @@ const cellOffset = 0;
 const cellSize = 0.2;
 
 // Position the camera
-const cameraDistance = worldSize * cellSize *1.42;
+const cameraDistance = worldSize * cellSize * 1.42;
 camera.position.set(0, worldSize / 12, cameraDistance);
 camera.lookAt(0, 0, 0);
 
 // Create a 3D world with a specific size, cell size, and cell offset
-const world3D = new World3D(worldSize, cellSize, cellOffset, '5state');
+const world3D = new World3D(worldSize, cellSize, cellOffset, "5state");
 
 // Generate an initial 3D world state with some cells alive
 const emptyGeneration = world3D.getcurrentGenerationStates();

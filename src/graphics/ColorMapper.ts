@@ -9,7 +9,7 @@ export class ColorMapper {
         const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2 + (z - centerZ) ** 2);
 
         // Define cloud-like color possibilities
-        const colors = ['yellow1', 'yellow2', 'orange1', 'orange2', 'red1', 'red2'];
+        const colors = ["yellow1", "yellow2", "orange1", "orange2", "red1", "red2"];
 
         // Map the distance to a color
         const colorIndex = Math.floor(
@@ -24,25 +24,25 @@ export class ColorMapper {
     }
 
     public static get5StateColor(currentGenerationStates: string[][][], x, y, z) {
-        const colors = ['yellow1', 'orange1', 'orange2', 'red1', 'red2'];
+        const colors = ["yellow1", "orange1", "orange2", "red1", "red2"];
 
         // Generate a random index to select a color
         const state = currentGenerationStates[x][y][z];
         let index;
         switch (state) {
-            case 'STATE_0':
+            case "STATE_0":
                 index = 0;
                 break;
-            case 'STATE_1':
+            case "STATE_1":
                 index = 1;
                 break;
-            case 'STATE_2':
+            case "STATE_2":
                 index = 2;
                 break;
-            case 'STATE_3':
+            case "STATE_3":
                 index = 3;
                 break;
-            case 'STATE_4':
+            case "STATE_4":
                 index = 4;
                 break;
         }
@@ -52,7 +52,7 @@ export class ColorMapper {
     }
 
     public static getRandomColor() {
-        const colors = ['yellow1', 'yellow2', 'yellow3', 'orange1', 'orange2', 'red1', 'red2'];
+        const colors = ["yellow1", "yellow2", "yellow3", "orange1", "orange2", "red1", "red2"];
 
         // Generate a random index to select a color
         const randomIndex = Math.floor(Math.random() * colors.length);

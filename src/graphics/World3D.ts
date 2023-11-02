@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import { scene } from '../renderer';
-import { ColorMapper } from './ColorMapper';
+import * as THREE from "three";
+import { scene } from "../renderer";
+import { ColorMapper } from "./ColorMapper";
 
 export class World3D {
     private worldSize: number;
@@ -76,13 +76,13 @@ export class World3D {
     private setCellColor = (meshI, x, y, z): void => {
         let rgb;
         switch (this.colorMode) {
-            case 'standard':
+            case "standard":
                 rgb = ColorMapper.mapPositionToColor(this.currentGenerationStates, x, y, z);
                 break;
-            case 'random':
+            case "random":
                 rgb = ColorMapper.getRandomColor();
                 break;
-            case '5state':
+            case "5state":
                 rgb = ColorMapper.get5StateColor(this.currentGenerationStates, x, y, z);
                 break;
         }
@@ -119,7 +119,7 @@ export class World3D {
         for (let x = 0; x < this.worldSize; x++) {
             currentGenerationStates[x] = new Array(this.worldSize);
             for (let y = 0; y < this.worldSize; y++) {
-                currentGenerationStates[x][y] = new Array(this.worldSize).fill('STATE_0');
+                currentGenerationStates[x][y] = new Array(this.worldSize).fill("STATE_0");
             }
         }
         return currentGenerationStates;

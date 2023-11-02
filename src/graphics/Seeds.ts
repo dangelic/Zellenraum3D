@@ -19,9 +19,9 @@ export class Seeds {
                     // Set the cell value to true if the random number is less than the probability
 
                     if (randomValue < probability) {
-                        seededWorld[x][y][z] = 'STATE_1';
+                        seededWorld[x][y][z] = "STATE_1";
                     } else {
-                        seededWorld[x][y][z] = 'STATE_0';
+                        seededWorld[x][y][z] = "STATE_0";
                     }
                 }
             }
@@ -32,7 +32,7 @@ export class Seeds {
             for (let y = 0; y < worldSize; y++) {
                 isCellVisible[x][y] = new Array(worldSize);
                 for (let z = 0; z < worldSize; z++) {
-                    if (seededWorld[x][y][z] === 'STATE_1') isCellVisible[x][y][z] = true;
+                    if (seededWorld[x][y][z] === "STATE_1") isCellVisible[x][y][z] = true;
                 }
             }
         }
@@ -43,9 +43,8 @@ export class Seeds {
     static getClusteredSeed(
         currentGenerationStates: string[][][],
         clusterSize: number,
-        probability: number
+        probability: number,
     ): [string[][][], boolean[][][]] {
-        
         const worldSize = currentGenerationStates.length;
         const seededWorld: string[][][] = [];
 
@@ -65,8 +64,9 @@ export class Seeds {
                         (x - centerX) ** 2 + (y - centerY) ** 2 + (z - centerZ) ** 2,
                     );
                     const randomValue = Math.random();
-                    if ((distance < clusterSize) && (randomValue < probability)) seededWorld[x][y][z] = 'STATE_1';
-                    else seededWorld[x][y][z] = 'STATE_0';
+                    if (distance < clusterSize && randomValue < probability)
+                        seededWorld[x][y][z] = "STATE_1";
+                    else seededWorld[x][y][z] = "STATE_0";
                 }
             }
         }
@@ -76,7 +76,7 @@ export class Seeds {
             for (let y = 0; y < worldSize; y++) {
                 isCellVisible[x][y] = new Array(worldSize);
                 for (let z = 0; z < worldSize; z++) {
-                    if (seededWorld[x][y][z] === 'STATE_1') isCellVisible[x][y][z] = true;
+                    if (seededWorld[x][y][z] === "STATE_1") isCellVisible[x][y][z] = true;
                 }
             }
         }
