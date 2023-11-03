@@ -10,7 +10,7 @@ Got inspired by the *Guru* of 3D Cellular Automata Visualization: [Softology](ht
 
 tbc.
 
-## Getting Started with the Eceltron
+## Start the Electron App
 To run this application, make sure you have **Node.js** installed. Then, follow these steps:
 1. Clone the repository to your local machine: ```git clone https://github.com/dangelic/Zellenraum3D.git```
 2. Change directory: ```cd Zellenraum3D```
