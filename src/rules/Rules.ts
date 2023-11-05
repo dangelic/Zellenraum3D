@@ -60,6 +60,44 @@ export class Rules {
         return [nextGeneration, isCellVisible];
     }
 
+    public static applyCrystalGrowth1(
+        currentGenerationStates: GenerationStatesMatrix,
+    ): [GenerationStatesMatrix, CellVisibilityMatrix] {
+        // Initialize the next generation with "STATE_0"
+        const worldSize = currentGenerationStates.length;
+        const nextGeneration = this.initializeNextGenerationArray(currentGenerationStates);
+
+        for (let x = 0; x < worldSize; x++) {
+            for (let y = 0; y < worldSize; y++) {
+                for (let z = 0; z < worldSize; z++) {
+                    const neighbors = Neighborhood.getvonNeumannNeighborhood(x, y, z);
+                    let aliveNeighbors = this.countAliveNeighbors(
+                        currentGenerationStates,
+                        neighbors,
+                    );
+
+                    // Apply rules based on the count of alive neighbors
+                    if (currentGenerationStates[x][y][z] === "STATE_1") {
+                        // Cell survives with the specified range of neighbors
+                        if (aliveNeighbors >= 0 && aliveNeighbors <= 6)
+                            nextGeneration[x][y][z] = "STATE_1";
+                    } else {
+                        // Cell is born in an empty location with the specified range of neighbors
+                        if (
+                            (aliveNeighbors === 1) ||
+                            (aliveNeighbors === 3)
+                        )
+                            nextGeneration[x][y][z] = "STATE_1";
+                    }
+                }
+            }
+        }
+
+        const visibleStates = ["STATE_1"];
+        const isCellVisible = this.calculateIsCellVisible(nextGeneration, visibleStates);
+        return [nextGeneration, isCellVisible];
+    }
+
     /**
      * Apply cloud rules to the current generation states.
      *

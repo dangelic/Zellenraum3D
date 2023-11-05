@@ -13,7 +13,7 @@ document.body.appendChild(renderer.domElement);
 // Create a scene and a camera
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const worldSize = 30;
+const worldSize = 45;
 const cellOffset = 0;
 const cellSize = 0.2;
 
@@ -27,7 +27,7 @@ const world3D = new World3D(worldSize, cellSize, cellOffset, "5state");
 
 // Generate an initial 3D world state with some cells alive
 const emptyGeneration: GenerationStatesMatrix = world3D.getCurrentGenerationStates();
-let [currentGenerationStates, isCellVisible] = Seeds.getClusteredSeed(emptyGeneration, 10, 0.1);
+let [currentGenerationStates, isCellVisible] = Seeds.getClusteredSeed(emptyGeneration, 2, 1);
 world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
 
 let condition = true;
@@ -35,12 +35,12 @@ let condition = true;
 // Set up an interval to apply rules and animate the scene
 const intervalId = setInterval(() => {
     if (condition) {
-        [currentGenerationStates, isCellVisible] = Rules.apply445(currentGenerationStates);
+        [currentGenerationStates, isCellVisible] = Rules.applyCrystalGrowth1(currentGenerationStates);
         world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
     } else {
         clearInterval(intervalId);
     }
-}, 90);
+}, 100);
 
 // Add 3D objects to the scene
 scene.add(world3D.cellMeshContainer);
