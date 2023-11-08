@@ -24,16 +24,16 @@ camera.position.set(0, worldSize / 12, cameraDistance);
 camera.lookAt(0, 0, 0);
 
 // Create a 3D world with a specific size, cell size, and cell offset
-const world3D = new World3D(worldSize, cellSize, cellOffset, "random");
+const world3D = new World3D(worldSize, cellSize, cellOffset, "standard");
 
 // Generate an initial 3D world state with some cells alive
 const emptyGeneration: GenerationStatesMatrix = world3D.getCurrentGenerationStates();
-let [currentGenerationStates, isCellVisible] = Seeds.getClusteredSeed(emptyGeneration, 30, 0.5);
+let [currentGenerationStates, isCellVisible] = Seeds.getClusteredSeed(emptyGeneration, 10, 0.1);
 world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
 
 let condition = true;
 
-const ruleBuilder = new RuleBuilder("Slow Decay")
+const ruleBuilder = new RuleBuilder("445")
 
 
 

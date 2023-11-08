@@ -115,7 +115,7 @@ export class World3D {
             case "random":
                 rgb = ColorMapper.getRandomColor();
                 break;
-            case "5state":
+            case "states":
                 rgb = ColorMapper.get5StateColor(this.currentGenerationStates, x, y, z);
                 break;
         }

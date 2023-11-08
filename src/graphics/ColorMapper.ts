@@ -60,25 +60,9 @@ export class ColorMapper {
         const colors = ["corral", "hotpink", "orange", "orangered", "red", "darkred", "crimson"];
 
         // Generate a random index to select a color
-        const state = currentGenerationStates[x][y][z];
-        let index;
-        switch (state) {
-            case "STATE_0":
-                index = 0;
-                break;
-            case "STATE_1":
-                index = 1;
-                break;
-            case "STATE_2":
-                index = 2;
-                break;
-            case "STATE_3":
-                index = 3;
-                break;
-            case "STATE_4":
-                index = 4;
-                break;
-        }
+        const stateString = currentGenerationStates[x][y][z];
+        const state = parseInt(stateString.match(/\d+/)[0]);
+        const index = state;
 
         // Return the RGB color for the randomly selected color
         return this.getColorRGB(colors[index]);
