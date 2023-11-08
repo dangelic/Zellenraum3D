@@ -1,30 +1,24 @@
 import * as fs from "fs";
 import * as path from "path";
+import { predefinedRuleSet } from "./predefinedRuleSet";
 
 import { Neighborhood } from "./Neighborhood";
 import { GenerationStatesMatrix, CellVisibilityMatrix } from "../types/Types";
 
 export class RuleBuilder {
-
     private ruleName: string;
     private properties;
 
-    public constructor(ruleName) {
+    public constructor(ruleName) {
         this.ruleName = ruleName;
         // this.properties = this.fetchRulePropertiesFromPredefinedSet(this.ruleName)
 
-        this.properties = {
-            "life_values": [4],
-            "death_values": [4],
-            "num_states": 5,
-            "neighborhood": "M"
-        }
+        this.properties = this.getValidPredefinedRuleset(ruleName);
     }
 
-    public  buildRuleFromPredefinedSet(
+    public buildRuleFromPredefinedSet(
         currentGenerationStates: GenerationStatesMatrix,
     ): [GenerationStatesMatrix, CellVisibilityMatrix] {
-
         const neighborhood: string = this.properties.neighborhood;
         const lifeValues = this.properties.life_values;
         const deathValues = this.properties.death_values;
@@ -37,58 +31,42 @@ export class RuleBuilder {
         for (let x = 0; x < worldSize; x++) {
             for (let y = 0; y < worldSize; y++) {
                 for (let z = 0; z < worldSize; z++) {
-                    const neighbors = Neighborhood.getMooreNeighborhood(x, y, z);
+                    let neighbors;
+                    if (neighborhood === "M")
+                        neighbors = Neighborhood.getMooreNeighborhood(x, y, z);
+                    if (neighborhood === "VN")
+                        neighbors = Neighborhood.getvonNeumannNeighborhood(x, y, z);
                     let aliveNeighbors = 0;
                     aliveNeighbors = this.countAliveNeighbors(currentGenerationStates, neighbors);
 
-                    let stateString = currentGenerationStates[x][y][z]
+                    let stateString = currentGenerationStates[x][y][z];
                     let state = parseInt(stateString.match(/\d+/)[0]);
 
                     if (state === 0) {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_4";
+                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = `STATE_${numStates-1}`;
                         else nextGeneration[x][y][z] = "STATE_0";
                     } else {
                         if (aliveNeighbors === 4) nextGeneration[x][y][z] = `STATE_${state}`;
-                        
                         else {
-                            state = state -1
+                            state = state - 1;
                             nextGeneration[x][y][z] = `STATE_${state}`;
                         }
-                }}
+                    }
+                }
             }
         }
-        
-        
+
         const notVisibleStates = ["STATE_0"];
         const isCellVisible = this.calculateIsCellVisible(nextGeneration, notVisibleStates);
         return [nextGeneration, isCellVisible];
     }
 
-    private  fetchRulePropertiesFromPredefinedSet(ruleName) {
-        try {
-            // Read predefinedRuleSet.json file
-            const filePath = path.join(__dirname, "predefinedRuleSet.json");
-
-            // Read the predefinedRuleSet.json file
-            const rawData = fs.readFileSync(filePath, "utf8");
-            const predefinedRules = JSON.parse(rawData);
-
-            // Search for the rule with the matching name
-            const matchingRule = predefinedRules.find((rule) => rule.name === ruleName);
-
-            if (matchingRule) {
-                // If a matching rule is found, return its properties
-                return matchingRule.properties;
-            } else {
-                throw new Error(`Rule '${ruleName}' not found in the predefinedRuleSet.`);
-            }
-        } catch (err) {
-            console.error(err);
-            return null;
-        }
+    private getValidPredefinedRuleset(ruleNameInput) {
+        const rule = predefinedRuleSet.find((rule) => rule.name === ruleNameInput);
+        return rule ? rule.properties : null;
     }
 
-    private  initializeNextGenerationArray(currentGenerationStates): GenerationStatesMatrix {
+    private initializeNextGenerationArray(currentGenerationStates): GenerationStatesMatrix {
         const worldSize = currentGenerationStates.length;
         const nextGeneration = new Array(worldSize);
         for (let x = 0; x < worldSize; x++) {
@@ -107,7 +85,7 @@ export class RuleBuilder {
      * @param neighbors - The coordinates of neighboring cells.
      * @returns The count of alive neighbors.
      */
-    private  countAliveNeighbors(
+    private countAliveNeighbors(
         currentGenerationStates: GenerationStatesMatrix,
         neighbors: number[][],
     ): number {
@@ -122,7 +100,7 @@ export class RuleBuilder {
                 nz >= 0 &&
                 nz < worldSize
             ) {
-                if (currentGenerationStates[nx][ny][nz] != "STATE_0") {
+                if (currentGenerationStates[nx][ny][nz] === "STATE_1") {
                     aliveNeighbors++;
                 }
             }
@@ -137,10 +115,11 @@ export class RuleBuilder {
      * @param visibleStates - The states that result in cells being visible.
      * @returns A boolean matrix indicating cell visibility.
      */
-    private  calculateIsCellVisible(
+    private calculateIsCellVisible(
         nextGeneration: GenerationStatesMatrix,
-        notVisibleStates: string[],
+        visibleStates: string[],
     ): CellVisibilityMatrix {
+        console.log(visibleStates);
         const worldSize = nextGeneration.length;
         const isCellVisible = new Array(worldSize);
         for (let x = 0; x < worldSize; x++) {
@@ -148,9 +127,11 @@ export class RuleBuilder {
             for (let y = 0; y < worldSize; y++) {
                 isCellVisible[x][y] = new Array(worldSize);
                 for (let z = 0; z < worldSize; z++) {
-                    if (nextGeneration[x][y][z] === "STATE_0")
+                    if (visibleStates.includes(nextGeneration[x][y][z])) {
                         isCellVisible[x][y][z] = false;
-                    else isCellVisible[x][y][z] = true;
+                    } else {
+                        isCellVisible[x][y][z] = true;
+                    }
                 }
             }
         }

@@ -24,7 +24,7 @@ camera.position.set(0, worldSize / 12, cameraDistance);
 camera.lookAt(0, 0, 0);
 
 // Create a 3D world with a specific size, cell size, and cell offset
-const world3D = new World3D(worldSize, cellSize, cellOffset, "5state");
+const world3D = new World3D(worldSize, cellSize, cellOffset, "random");
 
 // Generate an initial 3D world state with some cells alive
 const emptyGeneration: GenerationStatesMatrix = world3D.getCurrentGenerationStates();
@@ -33,18 +33,14 @@ world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
 
 let condition = true;
 
-const ruleBuilder = new RuleBuilder("445")
-
-
+const ruleBuilder = new RuleBuilder("445");
 
 // Set up an interval to apply rules and animate the scene
 const intervalId = setInterval(() => {
     if (condition) {
-        // [currentGenerationStates, isCellVisible] = ruleBuilder.buildRuleFromPredefinedSet(
-        //     currentGenerationStates,
-        // );
+        [currentGenerationStates, isCellVisible] =
+            ruleBuilder.buildRuleFromPredefinedSet(currentGenerationStates);
 
-        [currentGenerationStates, isCellVisible] = Rules.apply445(currentGenerationStates)
         world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
     } else {
         clearInterval(intervalId);
