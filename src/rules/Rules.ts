@@ -29,27 +29,20 @@ export class Rules {
                     let aliveNeighbors = 0;
                     aliveNeighbors = this.countAliveNeighbors(currentGenerationStates, neighbors);
 
-                    if (currentGenerationStates[x][y][z] === "STATE_0") {
+                    let stateString = currentGenerationStates[x][y][z]
+                    let state = parseInt(stateString.match(/\d+/)[0]);
+
+                    if (state === 0) {
                         if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_4";
                         else nextGeneration[x][y][z] = "STATE_0";
-                    }
-                    if (currentGenerationStates[x][y][z] === "STATE_1") {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_1";
-                        else nextGeneration[x][y][z] = "STATE_0";
-                    }
-                    if (currentGenerationStates[x][y][z] === "STATE_2") {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_2";
-                        else nextGeneration[x][y][z] = "STATE_1";
-                    }
-                    if (currentGenerationStates[x][y][z] === "STATE_3") {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_3";
-                        else nextGeneration[x][y][z] = "STATE_2";
-                    }
-                    if (currentGenerationStates[x][y][z] === "STATE_4") {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_4";
-                        else nextGeneration[x][y][z] = "STATE_3";
-                    }
-                }
+                    } else {
+                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = `STATE_${state}`;
+                        
+                        else {
+                            state = state -1
+                            nextGeneration[x][y][z] = `STATE_${state}`;
+                        }
+                }}
             }
         }
 

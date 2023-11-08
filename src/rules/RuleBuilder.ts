@@ -8,14 +8,17 @@ export class RuleBuilder {
 
     private ruleName: string;
     private properties;
-    private neighborhood
-    private lifeValues
-    private deathValues
-    private numStates
 
     public constructor(ruleName) {
         this.ruleName = ruleName;
-        this.properties = this.fetchRulePropertiesFromPredefinedSet(this.ruleName)
+        // this.properties = this.fetchRulePropertiesFromPredefinedSet(this.ruleName)
+
+        this.properties = {
+            "life_values": [4],
+            "death_values": [4],
+            "num_states": 5,
+            "neighborhood": "M"
+        }
     }
 
     public  buildRuleFromPredefinedSet(
@@ -34,42 +37,28 @@ export class RuleBuilder {
         for (let x = 0; x < worldSize; x++) {
             for (let y = 0; y < worldSize; y++) {
                 for (let z = 0; z < worldSize; z++) {
-                    let neighbors;
-                    if (neighborhood === "M")
-                        neighbors = Neighborhood.getMooreNeighborhood(x, y, z);
-                    else neighbors = Neighborhood.getvonNeumannNeighborhood(x, y, z);
+                    const neighbors = Neighborhood.getMooreNeighborhood(x, y, z);
                     let aliveNeighbors = 0;
                     aliveNeighbors = this.countAliveNeighbors(currentGenerationStates, neighbors);
-                    console.log("NNNNN" + aliveNeighbors);
-                    const stateString = currentGenerationStates[x][y][z];
 
-                    // Use a regular expression to extract the number
+                    let stateString = currentGenerationStates[x][y][z]
                     let state = parseInt(stateString.match(/\d+/)[0]);
 
-                    console.log(state);
-
                     if (state === 0) {
-                        if (lifeValues.includes(aliveNeighbors)) {
-                            nextGeneration[x][y][z] = `STATE_${numStates - 1}`;
-                            console.log("REACHED A1: " + nextGeneration[x][y][z]);
-                        } else {
-                            nextGeneration[x][y][z] = `STATE_0`;
-                            console.log("REACHED A2: " + nextGeneration[x][y][z]);
-                        }
-                            
-                        
+                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_4";
+                        else nextGeneration[x][y][z] = "STATE_0";
                     } else {
-                        if (deathValues.includes(aliveNeighbors)) {
+                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = `STATE_${state}`;
+                        
+                        else {
+                            state = state -1
                             nextGeneration[x][y][z] = `STATE_${state}`;
-                            console.log("REACHED B: " + nextGeneration[x][y][z]);
-                        } else {
-                            nextGeneration[x][y][z] = `STATE_${state -1}`;
-                            console.log("REACHED C: " + nextGeneration[x][y][z]);
                         }
-                    }
-                }
+                }}
             }
         }
+        
+        
         const notVisibleStates = ["STATE_0"];
         const isCellVisible = this.calculateIsCellVisible(nextGeneration, notVisibleStates);
         return [nextGeneration, isCellVisible];
@@ -159,7 +148,7 @@ export class RuleBuilder {
             for (let y = 0; y < worldSize; y++) {
                 isCellVisible[x][y] = new Array(worldSize);
                 for (let z = 0; z < worldSize; z++) {
-                    if (notVisibleStates.includes(nextGeneration[x][y][z]))
+                    if (nextGeneration[x][y][z] === "STATE_0")
                         isCellVisible[x][y][z] = false;
                     else isCellVisible[x][y][z] = true;
                 }

@@ -35,7 +35,7 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, "..", "index.html"));
 
     // Set the main window to fullscreen mode
-    mainWindow.setFullScreen(true);
+    mainWindow.setFullScreen(false);
 
     // Handle the "closed" event of the main window
     mainWindow.on("closed", () => {
