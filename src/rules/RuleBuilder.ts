@@ -43,13 +43,12 @@ export class RuleBuilder {
                     let state = parseInt(stateString.match(/\d+/)[0]);
 
                     if (state === 0) {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = `STATE_${numStates-1}`;
+                        if (lifeValues.includes(aliveNeighbors)) nextGeneration[x][y][z] = `STATE_${numStates-1}`;
                         else nextGeneration[x][y][z] = "STATE_0";
                     } else {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = `STATE_${state}`;
+                        if (deathValues.includes(aliveNeighbors)) nextGeneration[x][y][z] = `STATE_${state}`;
                         else {
-                            state = state - 1;
-                            nextGeneration[x][y][z] = `STATE_${state}`;
+                            nextGeneration[x][y][z] = `STATE_${state-1}`;
                         }
                     }
                 }

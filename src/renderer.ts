@@ -28,18 +28,22 @@ const world3D = new World3D(worldSize, cellSize, cellOffset, "random");
 
 // Generate an initial 3D world state with some cells alive
 const emptyGeneration: GenerationStatesMatrix = world3D.getCurrentGenerationStates();
-let [currentGenerationStates, isCellVisible] = Seeds.getClusteredSeed(emptyGeneration, 10, 0.1);
+let [currentGenerationStates, isCellVisible] = Seeds.getClusteredSeed(emptyGeneration, 2, 1);
 world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
 
 let condition = true;
 
-const ruleBuilder = new RuleBuilder("445");
+const ruleBuilder = new RuleBuilder("Crystal Growth 2")
+
+
 
 // Set up an interval to apply rules and animate the scene
 const intervalId = setInterval(() => {
     if (condition) {
-        [currentGenerationStates, isCellVisible] =
-            ruleBuilder.buildRuleFromPredefinedSet(currentGenerationStates);
+        [currentGenerationStates, isCellVisible] = ruleBuilder.buildRuleFromPredefinedSet(
+            currentGenerationStates,
+        );
+
 
         world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
     } else {

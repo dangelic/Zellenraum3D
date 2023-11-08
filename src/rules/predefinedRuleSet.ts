@@ -41,8 +41,8 @@ export const predefinedRuleSet = [
     {
         name: "Crystal Growth 1",
         properties: {
-            life_values: [0, 1, 2, 3, 4, 5, 6],
-            death_values: [1, 3],
+            life_values: [1, 3],
+            death_values: [0, 1, 2, 3, 4, 5, 6],
             num_states: 2,
             neighborhood: "VN",
         },
