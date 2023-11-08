@@ -24,7 +24,7 @@ camera.position.set(0, worldSize / 12, cameraDistance);
 camera.lookAt(0, 0, 0);
 
 // Create a 3D world with a specific size, cell size, and cell offset
-const world3D = new World3D(worldSize, cellSize, cellOffset, "standard");
+const world3D = new World3D(worldSize, cellSize, cellOffset, "5states");
 
 // Generate an initial 3D world state with some cells alive
 const emptyGeneration: GenerationStatesMatrix = world3D.getCurrentGenerationStates();
