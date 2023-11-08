@@ -22,7 +22,10 @@ export const predefinedRuleSet = [
         },
         seed: {
             option: "cluster",
-            properties: ["x"],
+            properties: {
+                clusterSize: 10,
+                propability: 0.1
+            }
         },
     },
     {
@@ -48,7 +51,10 @@ export const predefinedRuleSet = [
         },
         seed: {
             option: "cluster",
-            properties: ["x"],
+            properties: {
+                clusterSize: 2,
+                propability: 1.0
+            }
         },
     },
     {
@@ -61,7 +67,10 @@ export const predefinedRuleSet = [
         },
         seed: {
             option: "cluster",
-            properties: ["x"],
+            properties: {
+                clusterSize: 2,
+                propability: 1.0
+            }
         },
     },
     {

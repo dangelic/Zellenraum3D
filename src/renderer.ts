@@ -28,12 +28,12 @@ const world3D = new World3D(worldSize, cellSize, cellOffset, "random");
 
 // Generate an initial 3D world state with some cells alive
 const emptyGeneration: GenerationStatesMatrix = world3D.getCurrentGenerationStates();
-let [currentGenerationStates, isCellVisible] = Seeds.getClusteredSeed(emptyGeneration, 2, 1);
+let [currentGenerationStates, isCellVisible] = Seeds.getClusteredSeed(emptyGeneration, 30, 0.5);
 world3D.setCurrentGenerationStates(currentGenerationStates, isCellVisible);
 
 let condition = true;
 
-const ruleBuilder = new RuleBuilder("Crystal Growth 2")
+const ruleBuilder = new RuleBuilder("Slow Decay")
 
 
 
