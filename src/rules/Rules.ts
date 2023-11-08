@@ -29,33 +29,26 @@ export class Rules {
                     let aliveNeighbors = 0;
                     aliveNeighbors = this.countAliveNeighbors(currentGenerationStates, neighbors);
 
-                    if (currentGenerationStates[x][y][z] === "STATE_0") {
+                    let stateString = currentGenerationStates[x][y][z];
+                    let state = parseInt(stateString.match(/\d+/)[0]);
+
+                    if (state === 0) {
                         if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_4";
                         else nextGeneration[x][y][z] = "STATE_0";
-                    }
-                    if (currentGenerationStates[x][y][z] === "STATE_1") {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_1";
-                        else nextGeneration[x][y][z] = "STATE_0";
-                    }
-                    if (currentGenerationStates[x][y][z] === "STATE_2") {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_2";
-                        else nextGeneration[x][y][z] = "STATE_1";
-                    }
-                    if (currentGenerationStates[x][y][z] === "STATE_3") {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_3";
-                        else nextGeneration[x][y][z] = "STATE_2";
-                    }
-                    if (currentGenerationStates[x][y][z] === "STATE_4") {
-                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = "STATE_4";
-                        else nextGeneration[x][y][z] = "STATE_3";
+                    } else {
+                        if (aliveNeighbors === 4) nextGeneration[x][y][z] = `STATE_${state}`;
+                        else {
+                            state = state - 1;
+                            nextGeneration[x][y][z] = `STATE_${state}`;
+                        }
                     }
                 }
             }
         }
 
         // Transform states into visible state array (simply true or false)
-        const visibleStates = ["STATE_1", "STATE_2", "STATE_3", "STATE_4"];
-        const isCellVisible = this.calculateIsCellVisible(nextGeneration, visibleStates);
+        const notVisibleStates = ["STATE_0"];
+        const isCellVisible = this.calculateIsCellVisible(nextGeneration, notVisibleStates);
 
         return [nextGeneration, isCellVisible];
     }
@@ -83,18 +76,15 @@ export class Rules {
                             nextGeneration[x][y][z] = "STATE_1";
                     } else {
                         // Cell is born in an empty location with the specified range of neighbors
-                        if (
-                            (aliveNeighbors === 1) ||
-                            (aliveNeighbors === 3)
-                        )
+                        if (aliveNeighbors === 1 || aliveNeighbors === 3)
                             nextGeneration[x][y][z] = "STATE_1";
                     }
                 }
             }
         }
 
-        const visibleStates = ["STATE_1"];
-        const isCellVisible = this.calculateIsCellVisible(nextGeneration, visibleStates);
+        const notVisibleStates = ["STATE_0"];
+        const isCellVisible = this.calculateIsCellVisible(nextGeneration, notVisibleStates);
         return [nextGeneration, isCellVisible];
     }
 
@@ -137,7 +127,7 @@ export class Rules {
             }
         }
 
-        const visibleStates = ["STATE_1"];
+        const visibleStates = ["STATE_2"];
         const isCellVisible = this.calculateIsCellVisible(nextGeneration, visibleStates);
         return [nextGeneration, isCellVisible];
     }
@@ -201,6 +191,7 @@ export class Rules {
         nextGeneration: GenerationStatesMatrix,
         visibleStates: string[],
     ): CellVisibilityMatrix {
+        console.log(visibleStates);
         const worldSize = nextGeneration.length;
         const isCellVisible = new Array(worldSize);
         for (let x = 0; x < worldSize; x++) {
@@ -209,6 +200,8 @@ export class Rules {
                 isCellVisible[x][y] = new Array(worldSize);
                 for (let z = 0; z < worldSize; z++) {
                     if (visibleStates.includes(nextGeneration[x][y][z])) {
+                        isCellVisible[x][y][z] = false;
+                    } else {
                         isCellVisible[x][y][z] = true;
                     }
                 }

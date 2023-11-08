@@ -1,13 +1,12 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 
-
 /**
  * ** The main window of the Electron application "Zellenraum3D".
- * 
+ *
  * Zellenraum3D is a captivating 3D visualization of cellular automata, powered by the THREE.js library.
  * It provides a dynamic and interactive representation of evolving cellular structures.
- * 
+ *
  * From here on: Go to renderer.ts where the call-chain starts.
  */
 
@@ -36,7 +35,7 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, "..", "index.html"));
 
     // Set the main window to fullscreen mode
-    mainWindow.setFullScreen(true);
+    mainWindow.setFullScreen(false);
 
     // Handle the "closed" event of the main window
     mainWindow.on("closed", () => {
